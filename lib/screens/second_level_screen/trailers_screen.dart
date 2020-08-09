@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 //third party
 import 'package:provider/provider.dart';
+import 'package:vidzone/helpers/error_pop_up_helper.dart';
 import 'package:vidzone/models/media_model.dart';
+import 'package:vidzone/widgets/error_widget.dart';
 import 'package:vidzone/widgets/no_content_widget.dart';
 
 //widgets
@@ -24,7 +26,13 @@ class TrailerScreen extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return WaitingWidget();
           } else if (snapshot.hasError) {
-            //error widget
+             showPopUpError(context);
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: CustomErrorWidget(),
+              ),
+            );
           }
 
           final trailerData = trailerProvider.trailers;
