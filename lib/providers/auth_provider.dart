@@ -153,7 +153,7 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> autoLogin() async {
+  Future<String> autoLogin() async {
     //1 get instance of shared prefs
     final prefs = await SharedPreferences.getInstance();
 
@@ -161,11 +161,11 @@ class AuthProvider with ChangeNotifier {
     if (prefs.containsKey('id')) {
       print("Found key");
       isLoggedIn = true;
-      return true;
+      return "login";
     }
 
     //if not return false
      print("No found");
-    return false;
+    return "not logged in";
   }
 }

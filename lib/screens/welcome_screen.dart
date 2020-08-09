@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:vidzone/screens/sign_up.dart';
 
@@ -12,9 +14,10 @@ class WelcomeScreen extends StatelessWidget {
   static const routeName = "welcomeScreen";
   @override
   Widget build(BuildContext context) {
+    
     final theme = Theme.of(context);
     final screenHeight = MediaQuery.of(context).size.height;
-    final secColor = theme.accentColor;
+   
     final textTheme = theme.textTheme;
     return Scaffold(
       body: SafeArea(
@@ -25,6 +28,9 @@ class WelcomeScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
+               SizedBox(
+                height: screenHeight * 0.02,
+              ),
               Text(
                 "Welcome to Vidzone",
                 style: textTheme.headline1,
@@ -36,31 +42,7 @@ class WelcomeScreen extends StatelessWidget {
               SizedBox(
                 height: screenHeight * 0.02,
               ),
-              MainButtonWidget(
-                textStyle: textTheme.headline1,
-                color: secColor,
-                label: "SIGN IN",
-                onTap: () {
-                  Navigator.pushReplacementNamed(
-                    context,
-                    LoginScreen.routeName,
-                  );
-                },
-              ),
-              SizedBox(
-                height: screenHeight * 0.02,
-              ),
-              MainButtonWidget(
-                label: "SIGN UP",
-                color: secColor,
-                textStyle: textTheme.headline1,
-                onTap: () {
-                  Navigator.pushReplacementNamed(
-                    context,
-                    SigUpScreen.routeName,
-                  );
-                },
-              ),
+             
             ],
           ),
         ),

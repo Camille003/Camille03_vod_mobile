@@ -83,7 +83,19 @@ class Vidzone extends StatelessWidget {
               accentColor: Colors.redAccent[700],
               visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
-            home: auth.isLoggedIn != true ? WelcomeScreen() : HomeScreen(),
+            home: auth.isLoggedIn == true
+                ? HomeScreen()
+                : FutureBuilder(
+                    future: Future.delayed(Duration(seconds: 3), () {
+                      return auth.autoLogin();
+                    }),
+                    builder: (ctx, snapShot) =>
+                        snapShot.connectionState == ConnectionState.waiting
+                            ? WelcomeScreen()
+                            : snapShot.data == "login"
+                                ? HomeScreen()
+                                : SigUpScreen(),
+                  ),
             routes: {
               LandinScreen.routeName: (ctx) => LandinScreen(),
               WelcomeScreen.routeName: (ctx) => WelcomeScreen(),
