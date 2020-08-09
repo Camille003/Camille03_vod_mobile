@@ -3,10 +3,13 @@ import 'package:flutter/widgets.dart';
 //third party
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+//provider
+import './media_provider.dart';
+
 //models
 import '../models/media_model.dart';
 
-class MovieProvider with ChangeNotifier {
+class MusicProvider extends MediaProvider with ChangeNotifier {
   final _fireStore = Firestore.instance;
   final _identifier = "media";
 
@@ -15,7 +18,7 @@ class MovieProvider with ChangeNotifier {
     return [..._musics];
   }
 
-  Future<void> fetchAndSetMovies({String category = "All"}) async {
+  Future<void> fetchAndSetMusic({String category = "All"}) async {
     try {
       final musics1 = [];
       final moviesSnapshot = await _fireStore

@@ -6,11 +6,11 @@ import 'package:provider/provider.dart';
 import '../providers/user_provider.dart';
 
 //screens
-import './movies_screen.dart';
-import './music_screen.dart';
-import './trailers_screen.dart';
-import './library_screen.dart';
-import './news_screen.dart';
+import 'second_level_screen/movies_screen.dart';
+import 'second_level_screen/music_screen.dart';
+import 'second_level_screen/trailers_screen.dart';
+import 'second_level_screen/library_screen.dart';
+import 'second_level_screen/news_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = "homeScreen";
@@ -24,7 +24,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void onTap(int pageIndex) {
     _pageController.animateToPage(
       pageIndex,
-      duration: Duration(milliseconds: 300),
+      duration: Duration(
+        milliseconds: 300,
+      ),
       curve: Curves.easeInOut,
     );
     setState(() {
@@ -34,8 +36,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Widget> _screens = [
     MoviesScreen(),
-    MusiScreen(),
-    TrailersScreen(),
+    MusicScreen(),
+    TrailerScreen(),
     NewsScreen(),
     LibraryScreen()
   ];

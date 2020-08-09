@@ -1,33 +1,28 @@
 import 'package:flutter/material.dart';
 
-class VideoTileWidget extends StatelessWidget {
-   final String imageUrl;
-  final String id;
-  final int numberOfViews;
-  final String name;
-  final String creationDate;
-  final int numberOfLikes;
-  final String author;
-  final int numberOfComments;
-  final String description;
-  final String streamingUrl;
-  final Function addToPlayList;
-  final Function download;
+//third party
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:provider/provider.dart';
 
-  const VideoTileWidget({@required this.imageUrl,@required  this.id,@required  this.numberOfViews,@required  this.name,@required  this.creationDate,@required  this.numberOfLikes,@required  this.author,@required  this.numberOfComments,@required  this.description,@required  this.streamingUrl,@required  this.addToPlayList,@required  this.download,}) ;
+//model
+import '../models/media_model.dart';
+
+class VideoTileWidget extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
+    final mediaProvider = Provider.of<MediaModel>(context, listen: false);
     return GestureDetector(
-      onTap:  (){},
-          child: Container(
-            height: 300,
+      onTap: () {},
+      child: Container(
+        height: 300,
         child: Card(
-           margin: EdgeInsets.only(
-          bottom: 15,
-          top: 0,
-        ),
-        elevation: 1,
-        child: Column(
+          margin: EdgeInsets.only(
+            bottom: 15,
+            top: 0,
+          ),
+          elevation: 1,
+          child: Column(
             children: [
               Expanded(
                 flex: 2,
@@ -37,7 +32,7 @@ class VideoTileWidget extends StatelessWidget {
                     topRight: Radius.circular(10),
                   ),
                   child: Image.network(
-                    imageUrl,
+                    mediaProvider.imageUrl,
                     fit: BoxFit.fill,
                   ),
                 ),
@@ -55,97 +50,36 @@ class VideoTileWidget extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          name,
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                        Container(
-                          child: PopupMenuButton(
-                            onSelected: (String string) async {
-                             
-
-                              // if (string == "Downlod") {
-                              //   print("Downloading !!!");
-                              //   return;
-                              // }
-
-                        
-                              // Scaffold.of(context).hideCurrentSnackBar();
-                              // if (await VideoProvider()
-                              //     .hasBeenSaved(userId, id)) {
-                              //   Scaffold.of(context).showSnackBar(
-                              //     SnackBar(
-                              //       content: Text('Already in collection'),
-                              //     ),
-                              //   );
-                              // } else {
-                              //   await VideoProvider()
-                              //       .addToWatchLater(vidMap, userId, id);
-                              //   Scaffold.of(context).showSnackBar(
-                              //     SnackBar(
-                              //       content: Text('Added to colection'),
-                              //     ),
-                              //   );
-                              // }
-                            },
-                            itemBuilder: (context) => [
-                              PopupMenuItem(
-                                child: ListTile(
-                                  title: Text('Download'),
-                                ),
-                                value: 'Downlod',
-                                enabled: true,
-                                height: 30,
-                              ),
-                              PopupMenuItem(
-                                child: ListTile(
-                                  title: Text('Watch later'),
-                                ),
-                                value: 'Watch later',
-                                enabled: true,
-                                height: 30,
-                              ),
-                            ],
-                            icon: IconButton(
-                              icon: Icon(
-                                Icons.more_vert,
-                              ),
-                              color: Colors.black87,
-                              onPressed: null,
-                            ),
-                          ),
-                        ),
-                      ],
+                    Text(
+                      mediaProvider.name,
+                      style: Theme.of(context).textTheme.bodyText1,
                     ),
                     Row(
                       // mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Text(
-                          '$author',
+                          mediaProvider.author,
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
                                 color: Colors.black54,
                               ),
                         ),
                         SizedBox(width: 10),
                         Text(
-                          '$numberOfViews views',
+                          '${mediaProvider.numberOfViews} views',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
                                 color: Colors.black54,
                               ),
                         ),
                         SizedBox(width: 10),
                         Text(
-                          '$numberOfLikes likes',
+                          '${mediaProvider.numberOfLikes} likes',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
                                 color: Colors.black54,
                               ),
                         ),
                         Spacer(),
                         Text(
-                          '${timeago.format(DateTime.parse(creationDate), locale: 'en_short')} Ago',
+                          '${timeago.format(mediaProvider.uploadDate, locale: 'en_short')} Ago',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
                                 color: Colors.black54,
                               ),
@@ -156,7 +90,7 @@ class VideoTileWidget extends StatelessWidget {
                 ),
               ),
             ],
-          ),,
+          ),
         ),
       ),
     );

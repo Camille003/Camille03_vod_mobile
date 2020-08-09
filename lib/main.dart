@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 
 //third party
 import 'package:provider/provider.dart';
+import 'package:vidzone/providers/movie_provider.dart';
 
 //providers
 import './providers/auth_provider.dart';
 import './providers/user_provider.dart';
+import './providers/music_provider.dart';
+import './providers/trailer_provider.dart';
 
 //screens
 import './screens/landing_screen.dart';
@@ -29,6 +32,24 @@ class Vidzone extends StatelessWidget {
           create: (ctx) {
             print("creating auth provider");
             return AuthProvider();
+          },
+        ),
+         ChangeNotifierProvider<MovieProvider>(
+          create: (ctx) {
+            print("Movie provider");
+            return MovieProvider();
+          },
+        ),
+        ChangeNotifierProvider<TrailerProvider>(
+          create: (ctx) {
+            print("trailer provider");
+            return TrailerProvider();
+          },
+        ),
+        ChangeNotifierProvider<MusicProvider>(
+          create: (ctx) {
+            print("music provider");
+            return MusicProvider();
           },
         ),
         // ChangeNotifierProxyProvider<AuthProvider, UserProvider>(

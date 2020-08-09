@@ -6,7 +6,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 //models
 import '../models/media_model.dart';
 
-class MovieProvider with ChangeNotifier {
+//provider
+import './media_provider.dart';
+
+class MovieProvider extends MediaProvider with ChangeNotifier {
   final _fireStore = Firestore.instance;
   final _identifier = "media";
 
