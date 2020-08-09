@@ -47,7 +47,7 @@ class _VideoScreenState extends State<VideoScreen> {
   String userId;
   GlobalKey<ScaffoldState> _scaffoldKey;
 
-  Map<String, bool> _config = {
+  Map<String, dynamic> _config = {
     'liked': false,
     'saved': false,
     'downloaded': false,
@@ -174,65 +174,114 @@ class _VideoScreenState extends State<VideoScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Spacer(),
-                  FutureBuilder(
-                    future: _mediaSuperClass.hasBeenLiked(
-                      _mediaId,
-                      userId,
-                    ),
-                    builder: (ctx, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return WaitingWidget();
-                      } else if (!snapshot.data) {
-                        return Badge(
-                          badgeContent: Text('${_media.numberOfLikes}'),
-                          child: IconButton(
-                            icon: Icon(Icons.thumb_up),
-                            onPressed: () {
-                              _scaffoldKey.currentState.showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Liked',
-                                    style: TextStyle(
-                                      color: theme.accentColor,
-                                    ),
-                                  ),
-                                  backgroundColor: Colors.black,
-                                ),
-                              );
-                            },
+                  _config['liked']
+                      ? FutureBuilder(
+                          future: _mediaSuperClass.hasBeenLiked(
+                            _mediaId,
+                            userId,
                           ),
-                          badgeColor: theme.accentColor,
-                        );
-                      } else {
-                        return Badge(
-                          badgeContent: Text('${_media.numberOfLikes}'),
-                          child: Icon(Icons.thumb_up),
-                          badgeColor: theme.accentColor,
-                        );
-                      }
-                    },
-                  ),
+                          builder: (ctx, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return WaitingWidget();
+                            } else if (!snapshot.data) {
+                              return Badge(
+                                badgeContent: Text('${_media.numberOfLikes}'),
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.thumb_up,
+                                  ),
+                                  onPressed: () async {
+                                    await _mediaSuperClass.likeVideo(
+                                      userId,
+                                      _mediaId,
+                                    );
 
-                  // _scaffoldKey.currentState.(
-                  //   SnackBar(
-                  // content: Text(
-                  //   'Liked',
-                  //   style: TextStyle(
-                  //     color: theme.accentColor,
-                  //   ),
-                  // ),
-                  // backgroundColor: Colors.black,
-                  //   ),
-                  // );
+                                    setState(() {
+                                      _config['numberOfLikes'] =
+                                          _config['numberOfLikes'] + 1;
+                                    });
 
-                  //           setState(() {
-                  //             numberOfLikes += 1;
-                  //             liked = true;
-                  //           });
-                  //         },
-                  // ),
-                  // value: numberOfLikes.toString(),
-                  // ),
+                                    _scaffoldKey.currentState.showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Liked',
+                                          style: TextStyle(
+                                            color: theme.accentColor,
+                                          ),
+                                        ),
+                                        backgroundColor: Colors.black,
+                                      ),
+                                    );
+                                  },
+                                ),
+                                badgeColor: theme.accentColor,
+                              );
+                            } else {
+                              return Badge(
+                                badgeContent: Text('${_media.numberOfLikes}'),
+                                child: Icon(
+                                  Icons.thumb_up,
+                                ),
+                                badgeColor: theme.accentColor,
+                              );
+                            }
+                          },
+                        )
+                      : FutureBuilder(
+                          future: _mediaSuperClass.hasBeenLiked(
+                            _mediaId,
+                            userId,
+                          ),
+                          builder: (ctx, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return WaitingWidget();
+                            } else if (!snapshot.data) {
+                              return Badge(
+                                badgeContent: Text('${_media.numberOfLikes}'),
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.thumb_up,
+                                  ),
+                                  onPressed: () async {
+                                    await _mediaSuperClass.likeVideo(
+                                      userId,
+                                      _mediaId,
+                                    );
+
+                                    setState(() {
+                                      _config['numberOfLikes'] =
+                                          _config['numberOfLikes'] + 1;
+                                    });
+
+                                    _scaffoldKey.currentState.showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Liked',
+                                          style: TextStyle(
+                                            color: theme.accentColor,
+                                          ),
+                                        ),
+                                        backgroundColor: Colors.black,
+                                      ),
+                                    );
+                                  },
+                                ),
+                                badgeColor: theme.accentColor,
+                              );
+                            } else {
+                              return Badge(
+                                badgeContent: Text('${_media.numberOfLikes}'),
+                                child: Icon(
+                                  Icons.thumb_up,
+                                ),
+                                badgeColor: theme.accentColor,
+                              );
+                            }
+                          },
+                        ),
+
                   //download
                   IconButton(
                     iconSize: 23,
@@ -244,43 +293,95 @@ class _VideoScreenState extends State<VideoScreen> {
                   ),
 
                   //add to collection
-                  FutureBuilder(
-                    future: _mediaSuperClass.hasBeenSaved(
-                      userId,
-                      _mediaId,
-                    ),
-                    builder: (ctx, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return WaitingWidget();
-                      } else if (!snapshot.data) {
-                        return Badge(
-                          child: IconButton(
-                            icon: Icon(Icons.playlist_add),
-                            onPressed: () async {
-                              _scaffoldKey.currentState.showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Liked',
-                                    style: TextStyle(
-                                      color: theme.accentColor,
-                                    ),
+                  _config['saved']
+                      ? FutureBuilder(
+                          future: _mediaSuperClass.hasBeenSaved(
+                            userId,
+                            _mediaId,
+                          ),
+                          builder: (ctx, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return WaitingWidget();
+                            } else if (!snapshot.data) {
+                              return Badge(
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.playlist_add,
                                   ),
-                                  backgroundColor: Colors.black,
+                                  onPressed: () async {
+                                    await _mediaSuperClass.addToWatchLater(
+                                      userId,
+                                      _mediaId,
+                                    );
+                                    _scaffoldKey.currentState.showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Added to collection',
+                                          style: TextStyle(
+                                            color: theme.accentColor,
+                                          ),
+                                        ),
+                                        backgroundColor: Colors.black,
+                                      ),
+                                    );
+                                  },
                                 ),
                               );
-                            },
+                            } else {
+                              return Badge(
+                                badgeContent: Text('Saved'),
+                                child: Icon(
+                                  Icons.save,
+                                ),
+                              );
+                            }
+                          },
+                        )
+                      : FutureBuilder(
+                          future: _mediaSuperClass.hasBeenSaved(
+                            userId,
+                            _mediaId,
                           ),
-                        );
-                      } else {
-                        return Badge(
-                          badgeContent: Text('Saved'),
-                          child: Icon(
-                            Icons.save,
-                          ),
-                        );
-                      }
-                    },
-                  ),
+                          builder: (ctx, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return WaitingWidget();
+                            } else if (!snapshot.data) {
+                              return Badge(
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.playlist_add,
+                                  ),
+                                  onPressed: () async {
+                                    await _mediaSuperClass.addToWatchLater(
+                                      userId,
+                                      _mediaId,
+                                    );
+                                    _scaffoldKey.currentState.showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Added to collection',
+                                          style: TextStyle(
+                                            color: theme.accentColor,
+                                          ),
+                                        ),
+                                        backgroundColor: Colors.black,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            } else {
+                              return Badge(
+                                badgeContent: Text('Saved'),
+                                child: Icon(
+                                  Icons.save,
+                                ),
+                              );
+                            }
+                          },
+                        ),
 
                   // description
                   Container(
