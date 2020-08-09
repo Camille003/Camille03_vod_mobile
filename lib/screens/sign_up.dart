@@ -6,8 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:string_validator/string_validator.dart'
     show isLength, isAlphanumeric;
 import 'package:vidzone/providers/auth_provider.dart';
-import 'package:vidzone/screens/home_screen.dart';
-import 'package:vidzone/screens/welcome_screen.dart';
+
 
 //widgets
 import '../widgets/main_button_widget.dart';
