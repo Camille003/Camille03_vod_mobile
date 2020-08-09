@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 //third party
 import 'package:provider/provider.dart';
 import 'package:vidzone/providers/movie_provider.dart';
+import 'package:vidzone/screens/third_level_screen/video_screen.dart';
 
 //providers
 import './providers/auth_provider.dart';
@@ -52,23 +53,23 @@ class Vidzone extends StatelessWidget {
             return MusicProvider();
           },
         ),
-        // ChangeNotifierProxyProvider<AuthProvider, UserProvider>(
-        //   create: (ctx) {
-        //     print("User provider create");
-        //     return UserProvider(
-        //       '',
-        //     );
-        //   },
-        //   update: (ctx, authData, userData) {
-        //     print("User provider updated");
-        //     print('${userData.id} fuck');
-        //     return userData
-        //       ..update(
-        //         authData.id,
-        //       );
-        //   },
-        //   lazy: true,
-        // ),
+        ChangeNotifierProxyProvider<AuthProvider, UserProvider>(
+          create: (ctx) {
+            print("User provider create");
+            return UserProvider(
+              '',
+            );
+          },
+          update: (ctx, authData, userData) {
+            print("User provider updated");
+            print('${userData.id} fuck');
+            return userData
+              ..update(
+                authData.id,
+              );
+          },
+          lazy: true,
+        ),
       ],
       child: Consumer<AuthProvider>(
         builder: (ctx, auth, child) {
@@ -124,6 +125,7 @@ class Vidzone extends StatelessWidget {
               SigUpScreen.routeName: (ctx) => SigUpScreen(),
               HomeScreen.routeName: (ctx) => HomeScreen(),
               SplashScreen.routeName: (ctx) => SplashScreen(),
+              VideoScreen.routeName: (ctx) => VideoScreen(),
             },
           );
         },

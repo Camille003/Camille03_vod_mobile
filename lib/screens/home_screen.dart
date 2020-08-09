@@ -1,16 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+//third party
 import 'package:provider/provider.dart';
 
 //provider
 import '../providers/user_provider.dart';
 
 //screens
-import 'second_level_screen/movies_screen.dart';
-import 'second_level_screen/music_screen.dart';
-import 'second_level_screen/trailers_screen.dart';
-import 'second_level_screen/library_screen.dart';
-import 'second_level_screen/news_screen.dart';
+import './second_level_screen/movies_screen.dart';
+import './second_level_screen/music_screen.dart';
+import './second_level_screen/trailers_screen.dart';
+import './second_level_screen/library_screen.dart';
+import './second_level_screen/news_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = "homeScreen";

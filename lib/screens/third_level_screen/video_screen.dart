@@ -35,18 +35,30 @@ class VideoScreen extends StatefulWidget {
 }
 
 class _VideoScreenState extends State<VideoScreen> {
+  //controller
   TextEditingController _commentController;
+
+  //for playing the media
   String _mediaId;
   MediaModel _media;
-  MediaProvider _mediaSuperClass;
   String type;
-  List<CommentModel> _commentsArray;
+
+  //providers
   CommentsProvider _commentProvider;
   UserProvider _userProvider;
+  MediaProvider _mediaSuperClass;
+
+  //user data
   String username;
   String userId;
+
+  //scaffold
   GlobalKey<ScaffoldState> _scaffoldKey;
 
+  //data
+  List<CommentModel> _commentsArray;
+
+  //dirty hacks
   Map<String, dynamic> _config = {
     'liked': false,
     'saved': false,
@@ -128,7 +140,11 @@ class _VideoScreenState extends State<VideoScreen> {
                   color: Colors.transparent,
                   height: 300,
                   width: double.infinity,
-                  child: Center(child: Text('Hello')),
+                  child: Center(
+                    child: Text(
+                      'Hello',
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -406,7 +422,7 @@ class _VideoScreenState extends State<VideoScreen> {
                     ),
                   ),
 
-                  //coments block
+                  //comments block
                   Container(
                     padding: EdgeInsets.only(left: 10),
                     child: Row(
@@ -500,7 +516,9 @@ class _VideoScreenState extends State<VideoScreen> {
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.send),
+                        icon: Icon(
+                          Icons.send,
+                        ),
                         onPressed: () async {
                           if (_commentController.text.trim().isEmpty) {
                             return;
