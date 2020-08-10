@@ -92,6 +92,7 @@ class _VideoScreenState extends State<VideoScreen> {
 
     //media data
     Future.delayed(Duration.zero, () {
+      
       _mediaId = (ModalRoute.of(context).settings.arguments
           as Map<String, String>)['mediaId'];
       type = (ModalRoute.of(context).settings.arguments
@@ -99,16 +100,22 @@ class _VideoScreenState extends State<VideoScreen> {
 
       if (type == "music") {
         //get music object
-        _media = Provider.of<MusicProvider>(context, listen: false)
-            .getMediaById(_mediaId);
+        _media = Provider.of<MusicProvider>(
+          context,
+          listen: false,
+        ).getMediaById(_mediaId);
       } else if (type == "video") {
         //get video object
-        _media = Provider.of<MovieProvider>(context, listen: false)
-            .getMediaById(_mediaId);
+        _media = Provider.of<MovieProvider>(
+          context,
+          listen: false,
+        ).getMediaById(_mediaId);
       } else {
         //get trailers object
-        _media = Provider.of<TrailerProvider>(context, listen: false)
-            .getMediaById(_mediaId);
+        _media = Provider.of<TrailerProvider>(
+          context,
+          listen: false,
+        ).getMediaById(_mediaId);
       }
     });
 
@@ -124,6 +131,8 @@ class _VideoScreenState extends State<VideoScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+
+            //video player
             Container(
               child: AppBar(
                 leading: IconButton(

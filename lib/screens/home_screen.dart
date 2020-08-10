@@ -24,12 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
   PageController _pageController;
   int _pageIndex = 0;
   void onTap(int pageIndex) {
-    _pageController.animateToPage(
+    _pageController.jumpToPage(
       pageIndex,
-      duration: Duration(
-        milliseconds: 300,
-      ),
-      curve: Curves.easeInOut,
     );
     setState(() {
       _pageIndex = pageIndex;

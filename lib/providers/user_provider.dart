@@ -20,11 +20,9 @@ class UserProvider with ChangeNotifier {
     return _id;
   }
 
-
- void update(String id) {
+  void update(String id) {
     this._id = id;
   }
-  
 
   UserProvider(this._id);
 
@@ -36,7 +34,8 @@ class UserProvider with ChangeNotifier {
         _user = UserModel.fromFireBaseDocument(firebaseDocument.data);
       }
       notifyListeners();
-    } catch (e) {}
+    } catch (e) {
+      throw e;
+    }
   }
-
 }
