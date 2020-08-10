@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 
 //third party
 import 'package:provider/provider.dart';
-import 'package:vidzone/screens/third_level_screen/collection_screen.dart';
-import 'package:vidzone/screens/third_level_screen/history_screen.dart';
 
 //providers
 import '../../providers/history_provider.dart';
 
 //widgets
-
 import '../../widgets/recent_video_widget.dart';
 import '../../widgets/waiting_widget.dart';
+
+//screens
+import '../../screens/third_level_screen/collection_screen.dart';
+import '../../screens/third_level_screen/downloads_screen.dart';
+import '../../screens/third_level_screen/history_screen.dart';
 
 class LibraryScreen extends StatelessWidget {
   @override
@@ -37,7 +39,9 @@ class LibraryScreen extends StatelessWidget {
                   final listItems = historyProvider.getRecentItems();
 
                   if (listItems.isEmpty) {
-                    return Text('No history yet.');
+                    return Text(
+                      'No history yet.',
+                    );
                   } else {
                     return ListView.builder(
                       itemCount: listItems.length,
@@ -58,9 +62,7 @@ class LibraryScreen extends StatelessWidget {
             ),
             ListTile(
               onTap: () {
-                Navigator.of(context).pushNamed(
-                  HistoryScreen.routeName
-                );
+                Navigator.of(context).pushNamed(HistoryScreen.routeName);
               },
               leading: Icon(
                 Icons.history,
@@ -71,9 +73,7 @@ class LibraryScreen extends StatelessWidget {
             ),
             ListTile(
               onTap: () {
-                Navigator.of(context).pushNamed(
-                  CollectionScreen.routeName
-                );
+                Navigator.of(context).pushNamed(CollectionScreen.routeName);
               },
               leading: Icon(
                 Icons.library_add,
@@ -84,9 +84,7 @@ class LibraryScreen extends StatelessWidget {
             ),
             ListTile(
               onTap: () {
-                Navigator.of(context).pushNamed(
-                  DownloadScreen.routeName
-                );
+                Navigator.of(context).pushNamed(DownloadScreen.routeName);
               },
               leading: Icon(
                 Icons.file_download,

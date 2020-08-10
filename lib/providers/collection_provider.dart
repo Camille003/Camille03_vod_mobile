@@ -39,13 +39,30 @@ class CollectionProvider with ChangeNotifier {
     }
   }
 
-  Future<void> removeFromCollection(String movieId) async {
-    try {} catch (e) {
-      throw e;
+  //remove from watch later
+  Future<void> removeFromWatchLater(String userId, String movieId) async {
+    try {
+      final playLisRef = _firestore
+          .document(userId)
+          .collection("collection")
+          .document(movieId);
+
+      final doc = await playLisRef.get();
+
+      if (doc.exists) {
+        await playLisRef.delete();
+      }
+
+      _collectionItems.removeWhere(
+        (collectionItem) => collectionItem.id == movieId,
+      );
+
+      notifyListeners();
+    } catch (e) {
+      throw (e);
     }
   }
 
-  
   void update(String id) {
     this._userId = id;
   }

@@ -4,16 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:provider/provider.dart';
 
+
 //model
 import '../models/media_model.dart';
 
-class VideoTileWidget extends StatelessWidget {
+//screen
+import './../screens/third_level_screen/video_screen.dart';
 
+class VideoTileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mediaProvider = Provider.of<MediaModel>(context, listen: false);
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.of(context).pushNamed(
+          VideoScreen.routeName,
+          arguments: mediaProvider.id,
+        );
+      },
       child: Container(
         height: 300,
         child: Card(
