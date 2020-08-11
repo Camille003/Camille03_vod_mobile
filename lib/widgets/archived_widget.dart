@@ -24,29 +24,30 @@ class ArchivedWidget extends StatelessWidget {
         );
       },
       child: Container(
+        decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
         width: double.infinity,
-        height: 250,
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
+            Container(
+              height: 150,
               child: Image.network(
                 imageUrl,
-                fit: BoxFit.cover,
+                fit: BoxFit.fill,
               ),
             ),
-            Expanded(
-              child: Column(
-                children: [
-                  Text(
-                    name,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    author,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                 softWrap: true,
+                ),
+                Text(
+                  author,
+                  softWrap: true,
+                ),
+              ],
             ),
           ],
         ),

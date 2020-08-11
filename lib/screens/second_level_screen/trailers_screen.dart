@@ -12,7 +12,7 @@ import '../../widgets/video_widget.dart';
 import '../../widgets/waiting_widget.dart';
 
 //providers
-import '../../providers/trailer_provider.dart';
+import 'trailer_provider.dart';
 
 class TrailerScreen extends StatelessWidget {
   @override
@@ -24,9 +24,9 @@ class TrailerScreen extends StatelessWidget {
         future: trailerProvider.fetchAndSetTrailers(),
         builder: (ctx, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return WaitingWidget();
+            return Center(child : WaitingWidget());
           } else if (snapshot.hasError) {
-             showPopUpError(context);
+             //showPopUpError(context);
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(

@@ -24,10 +24,6 @@ class MovieProvider extends MediaProvider with ChangeNotifier {
       final moviesSnapshot = await _fireStore
           .collection(_identifier)
           .where(
-            "category",
-            isEqualTo: category,
-          )
-          .where(
             "type",
             isEqualTo: "video",
           )
@@ -35,13 +31,15 @@ class MovieProvider extends MediaProvider with ChangeNotifier {
       final movieItems = moviesSnapshot.documents;
       movieItems.forEach((movieItem) {
         movies1.add(
-          MediaModel.fromFireBaseDocument(movieItem),
+          MediaModel.fromFireBaseDocument(movieItem.data),
         );
       });
 
       _movies = [...movies1];
       notifyListeners();
-    } catch (e) {
+    } catch (e,s) {
+      print(e);
+       print(s);
       throw e;
     }
   }

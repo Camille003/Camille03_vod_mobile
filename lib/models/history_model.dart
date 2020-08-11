@@ -14,7 +14,7 @@ class HistoryModel {
     @required this.author,
   });
 
-  HistoryModel.fromFireBase(DocumentSnapshot snapshot)
+  HistoryModel.fromFireBase(Map<String,dynamic> snapshot)
       : id = snapshot['id'],
         name = snapshot['name'],
         imageUrl = snapshot['imageUrl'],

@@ -18,7 +18,8 @@ class CommentsProvider with ChangeNotifier {
 
   Future<void> createComment(CommentModel comment, String movieId) async {
     try {
-      final response = await _fireStore.collection(_identifier)
+      final response = await _fireStore
+          .collection(_identifier)
           .document(movieId)
           .collection(_identifier)
           .add(comment.toFireBaseDocument());
@@ -32,33 +33,30 @@ class CommentsProvider with ChangeNotifier {
       throw e;
     }
   }
-  
+
   Future<void> fecthAndSetComments(String movieId) async {
     List commentList = [];
     try {
-      final commentsQuerySnapshot = await _fireStore.collection(_identifier)
+      final commentsQuerySnapshot = await _fireStore
+          .collection(_identifier)
           .document(movieId)
           .collection(_identifier)
           .getDocuments();
 
       if (commentsQuerySnapshot.documents.isNotEmpty) {
-      
-        
-         commentsQuerySnapshot.documents.forEach((commentDocumentSnapshot) {
-          commentList.add(CommentModel.fromFireBaseDocument(
-              commentDocumentSnapshot));
+        commentsQuerySnapshot.documents.forEach((commentDocumentSnapshot) {
+          commentList
+              .add(CommentModel.fromFireBaseDocument(commentDocumentSnapshot));
         });
-
-        _comments = [...commentList];
-       
+        // commentList.reversed.toList();
+        _comments = [...commentList.reversed.toList()];
       }
 
-      notifyListeners() ;
+      notifyListeners();
     } catch (e) {
       print("Error from get data");
       print(e.toString());
       throw e;
     }
   }
-
 }

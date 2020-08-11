@@ -28,9 +28,9 @@ class HistoryScreen extends StatelessWidget {
         future: historyProvider.fetchAndSetHistoryItems(),
         builder: (ctx, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return WaitingWidget();
+            return Center(child: WaitingWidget());
           } else if (snapshot.hasError) {
-            showPopUpError(context);
+            //showPopUpError(context);
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(

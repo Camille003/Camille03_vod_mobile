@@ -24,10 +24,6 @@ class MusicProvider extends MediaProvider with ChangeNotifier {
       final moviesSnapshot = await _fireStore
           .collection(_identifier)
           .where(
-            "category",
-            isEqualTo: category,
-          )
-          .where(
             "type",
             isEqualTo: "music",
           )
@@ -35,7 +31,7 @@ class MusicProvider extends MediaProvider with ChangeNotifier {
       final musicItems = moviesSnapshot.documents;
       musicItems.forEach((musicItem) {
         musics1.add(
-          MediaModel.fromFireBaseDocument(musicItem),
+          MediaModel.fromFireBaseDocument(musicItem.data),
         );
       });
 

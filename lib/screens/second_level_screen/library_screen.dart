@@ -26,6 +26,7 @@ class LibraryScreen extends StatelessWidget {
           10,
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Recent',
@@ -34,13 +35,19 @@ class LibraryScreen extends StatelessWidget {
               future: historyProvider.fetchAndSetHistoryItems(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return WaitingWidget();
+                  return Center(
+                    child: WaitingWidget(),
+                  );
                 } else if (snapshot.connectionState == ConnectionState.done) {
                   final listItems = historyProvider.getRecentItems();
-
                   if (listItems.isEmpty) {
-                    return Text(
-                      'No history yet.',
+                    return Container(
+                      height: 80,
+                      width: double.infinity,
+                      child: Text(
+                        'No history yet.',
+                      ),
+                      alignment: Alignment.centerLeft,
                     );
                   } else {
                     return ListView.builder(
@@ -61,6 +68,7 @@ class LibraryScreen extends StatelessWidget {
               color: Colors.black,
             ),
             ListTile(
+              contentPadding: EdgeInsets.only(left: 0),
               onTap: () {
                 Navigator.of(context).pushNamed(HistoryScreen.routeName);
               },
@@ -72,6 +80,7 @@ class LibraryScreen extends StatelessWidget {
               ),
             ),
             ListTile(
+              contentPadding: EdgeInsets.only(left: 0),
               onTap: () {
                 Navigator.of(context).pushNamed(CollectionScreen.routeName);
               },
@@ -83,6 +92,7 @@ class LibraryScreen extends StatelessWidget {
               ),
             ),
             ListTile(
+              contentPadding: EdgeInsets.only(left: 0),
               onTap: () {
                 Navigator.of(context).pushNamed(DownloadScreen.routeName);
               },

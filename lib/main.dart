@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 //third party
 import 'package:provider/provider.dart';
 
-
 //providers
 import './providers/auth_provider.dart';
 import './providers/user_provider.dart';
 import './providers/music_provider.dart';
-import './providers/trailer_provider.dart';
+import 'screens/second_level_screen/trailer_provider.dart';
 import './providers/collection_provider.dart';
 import './providers/history_provider.dart';
 import './providers/movie_provider.dart';
+import './providers/comment_provider.dart';
 
 //screens
 import './screens/landing_screen.dart';
@@ -24,8 +24,6 @@ import './screens/third_level_screen/collection_screen.dart';
 import './screens/third_level_screen/history_screen.dart';
 import './screens/third_level_screen/video_screen.dart';
 import './screens/third_level_screen/downloads_screen.dart';
-
-
 
 void main() {
   runApp(Vidzone());
@@ -42,21 +40,24 @@ class Vidzone extends StatelessWidget {
             print("creating auth provider");
             return AuthProvider();
           },
-          lazy: false,
         ),
         ChangeNotifierProvider<MovieProvider>(
           create: (ctx) {
             print("Movie provider");
             return MovieProvider();
           },
-          lazy: false,
+        ),
+        ChangeNotifierProvider<CommentsProvider>(
+          create: (ctx) {
+            print("comments provider");
+            return CommentsProvider();
+          },
         ),
         ChangeNotifierProvider<TrailerProvider>(
           create: (ctx) {
             print("trailer provider");
             return TrailerProvider();
           },
-          lazy: false,
         ),
         ChangeNotifierProvider<MusicProvider>(
           create: (ctx) {
@@ -74,13 +75,12 @@ class Vidzone extends StatelessWidget {
           },
           update: (ctx, authData, userData) {
             print("User provider updated");
-            print('${userData.id} fuck');
+            print('${authData.id} fuck');
             return userData
               ..update(
                 authData.id,
               );
           },
-          lazy: false,
         ),
         ChangeNotifierProxyProvider<AuthProvider, HistoryProvider>(
           create: (ctx) => HistoryProvider(''),
@@ -88,7 +88,6 @@ class Vidzone extends StatelessWidget {
             ..update(
               authData.id,
             ),
-          lazy: false,
         ),
         ChangeNotifierProxyProvider<AuthProvider, CollectionProvider>(
           create: (ctx) => CollectionProvider(''),
@@ -96,7 +95,6 @@ class Vidzone extends StatelessWidget {
             ..update(
               authData.id,
             ),
-          lazy: false,
         ),
       ],
       child: Consumer<AuthProvider>(

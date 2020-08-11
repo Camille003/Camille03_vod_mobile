@@ -1,75 +1,3 @@
-// import 'dart:convert';
-
-// import 'package:flutter/foundation.dart';
-
-// //third parties
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:google_sign_in/google_sign_in.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-// import '../models/user_model.dart';
-
-// final GoogleSignIn _googleSignIn = GoogleSignIn();
-// final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-
-// class AuthProvider with ChangeNotifier {
-//   String _email;
-//   String _id;
-//   bool get isLoggedIn {
-//     if (_email != null) {
-//       print(true);
-//       return true;
-//     }
-
-//     return false;
-//   }
-
-//   String get id {
-//     return _id;
-//   }
-
-//   String get email {
-//     return _email;
-//   }
-
-//   Future<void> signUp(String password) async {
-//     try {
-//       final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-
-//       final AuthResult authResult =
-//           await _firebaseAuth.createUserWithEmailAndPassword(
-//               email: googleUser.email, password: password);
-
-//       final userData = {
-//         'id': authResult.user.uid,
-//         'email': googleUser.email,
-//         'displayName': googleUser.displayName,
-//         'password': password,
-//         'imageUrl': googleUser.photoUrl,
-//         'creationDate': DateTime.now().toIso8601String()
-//       };
-
-//       print(userData);
-
-//       await UserModel.createUser(userData);
-//       await sharedPrefs.setString(
-//       'id',
-//       id,
-//     );
-//     await sharedPrefs.setString(
-//       'email',
-//       email,
-//     );
-//      _email = userData['email'];
-//     _id = userData['id'];
-
-//       notifyListeners();
-//     } on AuthException catch (e) {
-//       throw e.message;
-//     } catch (e) {
-//       throw e;
-//     }
-//   }
-
 //   Future<void> signIn(String email, String password) async {
 //     try {
 //       final AuthResult authResult = await _firebaseAuth
@@ -92,24 +20,12 @@
 //     }
 //   }
 
-//   Future<bool> autoLogin() async {
-//     final prefs = await SharedPreferences.getInstance();
-//     if (!prefs.containsKey('email')) {
-//       print("Doesnot contain");
-//       return false;
-//     }
-//     _email = prefs.getString('email');
-//     _id = prefs.getString('id');
-
-//     return true;
-//   }
-// }
-
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vidzone/models/user_model.dart';
+
+import '../models/user_model.dart';
 
 final GoogleSignIn _googleSignIn = GoogleSignIn();
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -161,11 +77,13 @@ class AuthProvider with ChangeNotifier {
     if (prefs.containsKey('id')) {
       print("Found key");
       isLoggedIn = true;
+      _id = prefs.getString('id');
+      print(_id);
       return "login";
     }
 
     //if not return false
-     print("No found");
+    print("No found");
     return "not logged in";
   }
 }

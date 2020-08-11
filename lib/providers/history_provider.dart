@@ -8,7 +8,7 @@ import '../models/history_model.dart';
 
 class HistoryProvider with ChangeNotifier {
   String _userId;
-  
+
   final _firestore = Firestore.instance.collection("history");
   final _identifier = "history";
   HistoryProvider(this._userId);
@@ -29,7 +29,7 @@ class HistoryProvider with ChangeNotifier {
       querySnapShot.documents.forEach((snapShot) {
         historyArray.add(
           HistoryModel.fromFireBase(
-            snapShot,
+            snapShot.data,
           ),
         );
       });
@@ -42,7 +42,16 @@ class HistoryProvider with ChangeNotifier {
   }
 
   List<HistoryModel> getRecentItems() {
-    return _historyItems.sublist(0, 11);
+    if (_historyItems.length > 10) {
+      return _historyItems.sublist(
+        0,
+        11,
+      );
+    }
+    return _historyItems.sublist(
+      0,
+      _historyItems.length,
+    );
   }
 
   void update(String id) {

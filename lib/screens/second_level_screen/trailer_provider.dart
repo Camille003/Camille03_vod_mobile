@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:vidzone/providers/media_provider.dart';
 
 //models
-import '../models/media_model.dart';
+import '../../models/media_model.dart';
 
 class TrailerProvider extends MediaProvider with ChangeNotifier {
   final _fireStore = Firestore.instance;
@@ -22,10 +22,6 @@ class TrailerProvider extends MediaProvider with ChangeNotifier {
       final moviesSnapshot = await _fireStore
           .collection(_identifier)
           .where(
-            "category",
-            isEqualTo: category,
-          )
-          .where(
             "type",
             isEqualTo: "trailer",
           )
@@ -33,7 +29,7 @@ class TrailerProvider extends MediaProvider with ChangeNotifier {
       final trailerItems = moviesSnapshot.documents;
       trailerItems.forEach((trailerItem) {
         trailer1.add(
-          MediaModel.fromFireBaseDocument(trailerItem),
+          MediaModel.fromFireBaseDocument(trailerItem.data),
         );
       });
 

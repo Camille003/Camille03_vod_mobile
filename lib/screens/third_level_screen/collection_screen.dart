@@ -20,20 +20,21 @@ class CollectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final collectionProvider = Provider.of<CollectionProvider>(
       context,
-      listen: false,
+      listen: false
     );
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () async {
-          return collectionProvider.fetchAndSetCollectionItems();
+          await collectionProvider.fetchAndSetCollectionItems();
         },
         child: FutureBuilder(
           future: collectionProvider.fetchAndSetCollectionItems(),
           builder: (ctx, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return WaitingWidget();
+              return Center(child: WaitingWidget());
             } else if (snapshot.hasError) {
-              showPopUpError(context);
+              //showPopUpError(context);
+              print(snapshot.error);
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Center(

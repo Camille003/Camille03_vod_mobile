@@ -1,5 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:vidzone/models/collection_model.dart';
+
+final _fireStore = Firestore.instance.collection("media");
+final _playListRef = Firestore.instance.collection("collection");
+final _likesRef = Firestore.instance.collection("likes");
 
 class MediaData {
   final String id;
@@ -13,7 +18,7 @@ class MediaData {
   final String description;
   final String streamingUrl;
 
-  MediaData.fromFireBaseDocument(DocumentSnapshot fireBaseDoc)
+  MediaData.fromFireBaseDocument(Map<String, dynamic> fireBaseDoc)
       : id = fireBaseDoc['id'],
         name = fireBaseDoc['name'],
         author = fireBaseDoc['author'],
@@ -27,18 +32,16 @@ class MediaData {
 }
 
 class MediaModel with ChangeNotifier {
-  final _fireStore = Firestore.instance.collection("media");
-  final _playListRef = Firestore.instance.collection("collection");
-  final _likesRef = Firestore.instance.collection("likes");
-
   final String id;
   final String name;
   final String author;
   final String imageUrl;
   final int duration;
-   int numberOfLikes;
+
   final int numberOfViews;
   final DateTime uploadDate;
+
+  int numberOfLikes;
 
   MediaData _media;
 
@@ -57,12 +60,12 @@ class MediaModel with ChangeNotifier {
     this.uploadDate,
   });
 
-  MediaModel.fromFireBaseDocument(DocumentSnapshot firebaseDocument)
+  MediaModel.fromFireBaseDocument(Map<String, dynamic> firebaseDocument)
       : id = firebaseDocument['id'],
         name = firebaseDocument['name'],
         author = (firebaseDocument['author']),
         imageUrl = firebaseDocument['imageUrl'],
-        duration = (firebaseDocument['duration']) / 60,
+        duration = (firebaseDocument['duration']),
         numberOfLikes = firebaseDocument['numberOfLikes'],
         numberOfViews = firebaseDocument['numberOfViews'],
         uploadDate = DateTime.parse(firebaseDocument['uploadDate']);
@@ -70,16 +73,24 @@ class MediaModel with ChangeNotifier {
   Future<void> fetchAndSetMediaContent() async {
     try {
       final document = await _fireStore.document(id).get();
-      _media = MediaData.fromFireBaseDocument(document);
+
+      if (document.exists) {
+        _media = MediaData.fromFireBaseDocument(document.data);
+        print("Exists");
+      }
 
       notifyListeners();
-    } catch (e) {
+    } catch (e, s) {
+      print(e);
+      print(s);
       throw e;
     }
   }
 
   //check if saved
   Future<bool> hasBeenSaved(String userId) async {
+    print("has been saved  runnig");
+
     try {
       final playlistQuerySnapshot = await _playListRef
           .document(userId)
@@ -99,6 +110,7 @@ class MediaModel with ChangeNotifier {
 
   //check if video has been liked
   Future<bool> hasBeenLiked(String userId) async {
+    print("has been liked  runnig");
     try {
       final likedDocument = await _likesRef
           .document(userId)
@@ -118,6 +130,7 @@ class MediaModel with ChangeNotifier {
 
 //like a video
   Future<void> likeVideo(String userId) async {
+    print("Like video runnig");
     try {
       final mediaRef = _fireStore.document(
         id,
@@ -130,9 +143,9 @@ class MediaModel with ChangeNotifier {
           ),
         },
       );
-      await _likesRef.document(userId).setData(
+      await _likesRef.document(userId).collection("likes").document(id).setData(
         {
-          'vidId': id,
+          'id': id,
         },
       );
 
@@ -166,13 +179,17 @@ class MediaModel with ChangeNotifier {
 
   //add to watch later
   Future<void> addToWatchLater(String userId) async {
+    print("add to collection  runnig");
     try {
       final playList =
           _playListRef.document(userId).collection("collection").document(id);
 
-      await playList.setData({
-        'id': id,
-      });
+      CollectionModel model = CollectionModel(
+          id: id, name: name, imageUrl: imageUrl, author: author);
+
+      await playList.setData(
+        model.toFireBaseDocument(),
+      );
 
       notifyListeners();
     } catch (e) {

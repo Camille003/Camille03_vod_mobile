@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 //helpers
 import '../../helpers/error_pop_up_helper.dart';
 
-
 //providers
 import '../../providers/movie_provider.dart';
 
@@ -19,7 +18,6 @@ import '../../widgets/no_content_widget.dart';
 import '../../widgets/video_widget.dart';
 import '../../widgets/waiting_widget.dart';
 
-
 class MoviesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -29,9 +27,10 @@ class MoviesScreen extends StatelessWidget {
         future: movieProvider.fetchAndSetMovies(),
         builder: (ctx, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return WaitingWidget();
+            return Center(child : WaitingWidget());
           } else if (snapshot.hasError) {
-            showPopUpError(context);
+            print(snapshot.error);
+            //showPopUpError(context);
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(
@@ -40,6 +39,7 @@ class MoviesScreen extends StatelessWidget {
             );
           }
           final movieData = movieProvider.movies;
+          print(movieData);
           if (movieData.isEmpty) {
             return Padding(
               padding: const EdgeInsets.all(8.0),

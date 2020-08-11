@@ -14,7 +14,7 @@ class CollectionModel {
     @required this.author,
   });
 
-  CollectionModel.fromFireBase(DocumentSnapshot snapshot)
+  CollectionModel.fromFireBase(Map<String,dynamic> snapshot)
       : id = snapshot['id'],
         name = snapshot['name'],
         imageUrl = snapshot['imageUrl'],

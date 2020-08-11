@@ -18,23 +18,26 @@ class CollectionProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetCollectionItems() async {
-    final collectionArray = [];
-    final querySnapShot = await _firestore
-        .document(_userId)
-        .collection(_identifier)
-        .getDocuments();
-    if (querySnapShot.documents.isNotEmpty) {
-      querySnapShot.documents.forEach((snapShot) {
-        collectionArray.add(
-          CollectionModel.fromFireBase(
-            snapShot,
-          ),
-        );
-      });
-    }
-    _collectionItems = [...collectionArray];
-    notifyListeners();
-    try {} catch (e) {
+    print(_userId);
+
+    try {
+      final collectionArray = [];
+      final querySnapShot = await _firestore
+          .document(_userId)
+          .collection(_identifier)
+          .getDocuments();
+      if (querySnapShot.documents.isNotEmpty) {
+        querySnapShot.documents.forEach((snapShot) {
+          collectionArray.add(
+            CollectionModel.fromFireBase(
+              snapShot.data,
+            ),
+          );
+        });
+      }
+      _collectionItems = [...collectionArray];
+      notifyListeners();
+    } catch (e) {
       throw e;
     }
   }

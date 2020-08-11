@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:provider/provider.dart';
 
-
 //model
 import '../models/media_model.dart';
 
@@ -14,19 +13,29 @@ import './../screens/third_level_screen/video_screen.dart';
 class VideoTileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final mediaProvider = Provider.of<MediaModel>(context, listen: false);
+    final mediaProvider = Provider.of<MediaModel>(context);
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pushNamed(
-          VideoScreen.routeName,
-          arguments: mediaProvider.id,
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (ctx) => ChangeNotifierProvider.value(
+              value: mediaProvider,
+              child: VideoScreen(),
+            ),
+          ),
         );
       },
+      // onTap: () {
+      //   Navigator.of(context).pushNamed(
+      //     VideoScreen.routeName,
+      //     arguments: mediaProvider,
+      //   );
+      // },
       child: Container(
         height: 300,
         child: Card(
           margin: EdgeInsets.only(
-            bottom: 15,
+            bottom: 0,
             top: 0,
           ),
           elevation: 1,
@@ -34,15 +43,9 @@ class VideoTileWidget extends StatelessWidget {
             children: [
               Expanded(
                 flex: 2,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    topRight: Radius.circular(10),
-                  ),
-                  child: Image.network(
-                    mediaProvider.imageUrl,
-                    fit: BoxFit.fill,
-                  ),
+                child: Image.network(
+                  mediaProvider.imageUrl,
+                  fit: BoxFit.fill,
                 ),
               ),
               Container(
@@ -57,6 +60,7 @@ class VideoTileWidget extends StatelessWidget {
                   color: Colors.grey[200],
                 ),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       mediaProvider.name,
@@ -87,7 +91,7 @@ class VideoTileWidget extends StatelessWidget {
                         ),
                         Spacer(),
                         Text(
-                          '${timeago.format(mediaProvider.uploadDate, locale: 'en_short')} Ago',
+                          '${timeago.format(mediaProvider.uploadDate, locale: 'en_short', allowFromNow: false)} Ago',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
                                 color: Colors.black54,
                               ),

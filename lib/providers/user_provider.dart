@@ -12,26 +12,26 @@ final _fireStore = Firestore.instance;
 class UserProvider with ChangeNotifier {
   UserModel _user;
   String _id;
+
   UserModel get user {
     return _user;
   }
 
-  String get id {
-    return _id;
-  }
-
   void update(String id) {
     this._id = id;
+    print(this._id);
   }
 
   UserProvider(this._id);
 
   Future<void> fetchAndSetUser() async {
+   
     try {
       final firebaseDocument =
           await _fireStore.collection("users").document(_id).get();
       if (firebaseDocument.exists) {
         _user = UserModel.fromFireBaseDocument(firebaseDocument.data);
+        print(_user.accountType);
       }
       notifyListeners();
     } catch (e) {
