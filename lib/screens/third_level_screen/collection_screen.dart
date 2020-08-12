@@ -18,55 +18,96 @@ class CollectionScreen extends StatelessWidget {
   static const routeName = "collectionScreen";
   @override
   Widget build(BuildContext context) {
-    final collectionProvider = Provider.of<CollectionProvider>(
-      context,
-      listen: false
-    );
+    final collectionProvider =
+        Provider.of<CollectionProvider>(context, listen: false);
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: () async {
-          await collectionProvider.fetchAndSetCollectionItems();
-        },
-        child: FutureBuilder(
-          future: collectionProvider.fetchAndSetCollectionItems(),
-          builder: (ctx, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: WaitingWidget());
-            } else if (snapshot.hasError) {
-              //showPopUpError(context);
-              print(snapshot.error);
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                  child: CustomErrorWidget(),
+      appBar: AppBar(
+        title: Text(
+          'Collection',
+          style: Theme.of(context).appBarTheme.textTheme.headline1,
+        ),
+      ),
+      body: FutureBuilder(
+        future: collectionProvider.fetchAndSetCollectionItems(),
+        builder: (ctx, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: WaitingWidget());
+          } else if (snapshot.hasError) {
+            //showPopUpError(context);
+            print(snapshot.error);
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: CustomErrorWidget(),
+              ),
+            );
+          }
+          final collectionData = collectionProvider.collectionItems;
+          if (collectionData.isEmpty) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: NoContentWidget(
+                  'No saved media',
                 ),
-              );
-            }
-            final collectionData = collectionProvider.collectionItems;
-            if (collectionData.isEmpty) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                  child: NoContentWidget(
-                    'No saved media',
-                  ),
-                ),
-              );
-            } else {
+              ),
+            );
+          } else {
+            return Consumer<CollectionProvider>(
+                builder: (ctx, collectionData, child) {
               return ListView.builder(
                 itemBuilder: (context, index) {
-                  return ArchivedWidget(
-                    id: collectionData[index].id,
-                    author: collectionData[index].author,
-                    name: collectionData[index].name,
-                    imageUrl: collectionData[index].imageUrl,
+                  return Dismissible(
+                    key: ValueKey(
+                      collectionData.collectionItems[index].id,
+                    ),
+                    background: Container(
+                      alignment: Alignment.centerRight,
+                      color: Colors.red,
+                      child: Icon(
+                        Icons.delete_forever,
+                      ),
+                    ),
+                    confirmDismiss: (dimissDirection) {
+                      return showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text(
+                                'Are you sure you want to delete from collection',
+                              ),
+                              actions: [
+                                FlatButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(true),
+                                  child: Text('Yes'),
+                                ),
+                                FlatButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(false),
+                                  child: Text('No'),
+                                )
+                              ],
+                            );
+                          });
+                    },
+                    onDismissed: (direction) {
+                      collectionData.removeFromWatchLater(
+                          collectionData.collectionItems[index].id);
+                    },
+                    child: ArchivedWidget(
+                      id: collectionData.collectionItems[index].id,
+                      author: collectionData.collectionItems[index].author,
+                      name: collectionData.collectionItems[index].name,
+                      imageUrl: collectionData.collectionItems[index].imageUrl,
+                    ),
                   );
                 },
-                itemCount: collectionProvider.collectionItems.length,
+                itemCount: collectionData.collectionItems.length,
               );
-            }
-          },
-        ),
+            });
+          }
+        },
       ),
     );
   }

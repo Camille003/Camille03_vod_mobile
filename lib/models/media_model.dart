@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:vidzone/models/collection_model.dart';
+import 'package:vidzone/models/download_model.dart';
 
 final _fireStore = Firestore.instance.collection("media");
 final _playListRef = Firestore.instance.collection("collection");
@@ -98,7 +99,9 @@ class MediaModel with ChangeNotifier {
           .document(id)
           .get();
 
+     
       if (!playlistQuerySnapshot.exists) {
+         print(playlistQuerySnapshot.data);
         return false;
       }
       return true;
@@ -185,7 +188,11 @@ class MediaModel with ChangeNotifier {
           _playListRef.document(userId).collection("collection").document(id);
 
       CollectionModel model = CollectionModel(
-          id: id, name: name, imageUrl: imageUrl, author: author);
+        id: id,
+        name: name,
+        imageUrl: imageUrl,
+        author: author,
+      );
 
       await playList.setData(
         model.toFireBaseDocument(),

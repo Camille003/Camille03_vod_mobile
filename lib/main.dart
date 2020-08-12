@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 
 //third party
 import 'package:provider/provider.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 
 //providers
 import './providers/auth_provider.dart';
 import './providers/user_provider.dart';
 import './providers/music_provider.dart';
-import 'screens/second_level_screen/trailer_provider.dart';
 import './providers/collection_provider.dart';
 import './providers/history_provider.dart';
 import './providers/movie_provider.dart';
 import './providers/comment_provider.dart';
+import './providers/download_provider.dart';
+import './providers/trailer_provider.dart';
 
 //screens
 import './screens/landing_screen.dart';
@@ -25,7 +27,10 @@ import './screens/third_level_screen/history_screen.dart';
 import './screens/third_level_screen/video_screen.dart';
 import './screens/third_level_screen/downloads_screen.dart';
 
-void main() {
+const debug = true;
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FlutterDownloader.initialize(debug: debug);
   runApp(Vidzone());
 }
 
@@ -37,32 +42,32 @@ class Vidzone extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<AuthProvider>(
           create: (ctx) {
-            print("creating auth provider");
             return AuthProvider();
           },
         ),
         ChangeNotifierProvider<MovieProvider>(
           create: (ctx) {
-            print("Movie provider");
             return MovieProvider();
           },
         ),
         ChangeNotifierProvider<CommentsProvider>(
           create: (ctx) {
-            print("comments provider");
             return CommentsProvider();
           },
         ),
         ChangeNotifierProvider<TrailerProvider>(
           create: (ctx) {
-            print("trailer provider");
             return TrailerProvider();
           },
         ),
         ChangeNotifierProvider<MusicProvider>(
           create: (ctx) {
-            print("music provider");
             return MusicProvider();
+          },
+        ),
+        ChangeNotifierProvider<DownloadProvider>(
+          create: (ctx) {
+            return DownloadProvider();
           },
           lazy: false,
         ),

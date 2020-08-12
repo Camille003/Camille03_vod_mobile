@@ -1,9 +1,22 @@
+//dart
+import 'dart:isolate';
+import 'dart:ui';
+import 'dart:async';
+import 'dart:io';
+
+//flutter
 import 'package:flutter/material.dart';
 
 //third party
 import 'package:provider/provider.dart';
 import 'package:badges/badges.dart';
+import 'package:flick_video_player/flick_video_player.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:video_player/video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 //constants
 import '../../constants/styles.dart';
@@ -15,6 +28,7 @@ import '../../models/comments_model.dart';
 //providers
 import '../../providers/user_provider.dart';
 import '../../providers/comment_provider.dart';
+import '../../providers/download_provider.dart';
 
 //widgets
 import '../../widgets/comment_widget.dart';
@@ -23,21 +37,32 @@ import '../../widgets/waiting_widget.dart';
 //screens
 import '../../screens/home_screen.dart';
 
-class VideoScreen extends StatefulWidget {
+const debug = true;
+
+class VideoScreen extends StatefulWidget with WidgetsBindingObserver {
+  //from flutter downloader example
+  // final TargetPlatform platform;
+
   static const routeName = "videoScreen";
   // final mediaId;
-  // VideoScreen(this.mediaId);
+  // VideoScreen();
 
   @override
   _VideoScreenState createState() => _VideoScreenState();
 }
 
 class _VideoScreenState extends State<VideoScreen> {
+//for downloads
+  ReceivePort _port = ReceivePort();
+  bool _isLoading;
+  bool _permissionReady;
+  String _localPath;
+
   //controller
   TextEditingController _commentController;
 
   //for playing the media
-
+  FlickManager flickManager;
   MediaModel _mediaModelProvider;
   MediaData _mediaData;
 
@@ -60,8 +85,65 @@ class _VideoScreenState extends State<VideoScreen> {
     'numerOfLikes': 0,
   };
 
+  //for downloads
+  void _unbindBackgroundIsolate() {
+    IsolateNameServer.removePortNameMapping('downloader_send_port');
+  }
+
+  void _bindBackgroundIsolate() {
+    bool isSuccess = IsolateNameServer.registerPortWithName(
+        _port.sendPort, 'downloader_send_port');
+    if (!isSuccess) {
+      _unbindBackgroundIsolate();
+      _bindBackgroundIsolate();
+      return;
+    }
+    _port.listen((dynamic data) {
+      if (debug) {
+        print('UI Isolate Callback: $data');
+      }
+      // String id = data[0];
+      // DownloadTaskStatus status = data[1];
+      // int progress = data[2];
+
+      // final task = _tasks?.firstWhere((task) => task.taskId == id);
+      // if (task != null) {
+      //   setState(() {
+      //     task.status = status;
+      //     task.progress = progress;
+      //   });
+      // }
+    });
+  }
+
+  static void downloadCallback(
+      String id, DownloadTaskStatus status, int progress) {
+    if (debug) {
+      print(
+          'Background Isolate Callback: task ($id) is in status ($status) and process ($progress)');
+    }
+    final SendPort send =
+        IsolateNameServer.lookupPortByName('downloader_send_port');
+    send.send([id, status, progress]);
+  }
+
+  Future<String> _findLocalPath() async {
+    final directory = Platform.isAndroid
+        ? await getExternalStorageDirectory()
+        : await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
+
   @override
   void initState() {
+    //for download
+    _bindBackgroundIsolate();
+
+    FlutterDownloader.registerCallback(downloadCallback);
+
+    _isLoading = true;
+    _permissionReady = false;
+
     //text controller
     _commentController = TextEditingController();
     _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -74,6 +156,10 @@ class _VideoScreenState extends State<VideoScreen> {
             (value) => setState(() {
               _mediaData = _mediaModelProvider.media;
               _config['numberOfLikes'] = _mediaData.numberOfLikes;
+              flickManager = FlickManager(
+                videoPlayerController: VideoPlayerController.network(
+                    'https://res.cloudinary.com/dohp2afc4/video/upload/v1589451729/John_Wick_Official_Trailer__1__2014__-_Keanu_Reeves__Willem_Dafoe_Movie_HD_480p_lkzpys.mp4'),
+              );
             }),
           );
 
@@ -97,6 +183,15 @@ class _VideoScreenState extends State<VideoScreen> {
     });
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    flickManager.dispose();
+    _commentController.dispose();
+    IsolateNameServer.removePortNameMapping('downloader_send_port');
+    super.dispose();
   }
 
   @override
@@ -130,8 +225,28 @@ class _VideoScreenState extends State<VideoScreen> {
                       height: 250,
                       width: double.infinity,
                       child: Center(
-                        child: Text(
-                          '${_mediaData.streamingUrl}',
+                        child: VisibilityDetector(
+                          key: ObjectKey(flickManager),
+                          onVisibilityChanged: (visibility) {
+                            if (visibility.visibleFraction == 0 &&
+                                this.mounted) {
+                              flickManager.flickControlManager.autoPause();
+                            } else if (visibility.visibleFraction == 1) {
+                              flickManager.flickControlManager.autoResume();
+                            }
+                          },
+                          child: Container(
+                            child: FlickVideoPlayer(
+                              flickManager: flickManager,
+                              flickVideoWithControls: FlickVideoWithControls(
+                                controls: FlickPortraitControls(),
+                              ),
+                              flickVideoWithControlsFullscreen:
+                                  FlickVideoWithControls(
+                                controls: FlickLandscapeControls(),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -225,22 +340,108 @@ class _VideoScreenState extends State<VideoScreen> {
                           );
                         },
                       ),
-SizedBox(
-  width: 15,
-),
-                      //       //download
-                      IconButton(
-                        iconSize: 23,
-                        icon: Icon(
-                          Icons.file_download,
-                          color: Colors.black54,
-                        ),
-                        onPressed: () {},
+                      SizedBox(
+                        width: 15,
                       ),
-SizedBox(
-  width: 15,
-),
-                      
+
+                      //download
+                      Consumer<DownloadProvider>(
+                        builder: (ctx, downloadData, child) {
+                          return FutureBuilder(
+                            future: downloadData.hasBeenDownloaded(
+                              _mediaData.id,
+                            ),
+                            builder: (ctx, snapshot) => snapshot
+                                        .connectionState ==
+                                    ConnectionState.none
+                                ? WaitingWidget()
+                                : snapshot.data == true
+                                    ? Badge(
+                                        child: Icon(
+                                          Icons.file_download,
+                                        ),
+                                        badgeColor: theme.accentColor,
+                                      )
+                                    : Badge(
+                                        showBadge: false,
+                                        child: IconButton(
+                                          icon: Icon(
+                                            Icons.file_download,
+                                          ),
+                                          onPressed: () async {
+                                            print("Downloading");
+
+                                            PermissionStatus permission;
+                                            //1 check if we have permisions
+                                            final isGranted = await Permission
+                                                .storage.isGranted;
+
+                                            //2 if we do not , request
+                                            if (!isGranted) {
+                                              permission = await Permission
+                                                  .storage
+                                                  .request();
+                                            }
+
+                                            //3 if not given terminate
+                                            if (permission.isDenied) {
+                                              return;
+                                            }
+                                            //5 if we do download
+                                            print("Local path");
+                                            _localPath =
+                                                (await _findLocalPath()) +
+                                                    Platform.pathSeparator +
+                                                    'Download';
+
+                                            final savedDir =
+                                                Directory(_localPath);
+                                            bool hasExisted =
+                                                await savedDir.exists();
+                                            if (!hasExisted) {
+                                              savedDir.create();
+                                            }
+
+                                            final stringName =
+                                                await FlutterDownloader.enqueue(
+                                              url:
+                                                  'https://res.cloudinary.com/dohp2afc4/video/upload/v1589451729/John_Wick_Official_Trailer__1__2014__-_Keanu_Reeves__Willem_Dafoe_Movie_HD_480p_lkzpys.mp4',
+                                              savedDir: _localPath,
+                                              showNotification: true,
+                                              openFileFromNotification: true,
+                                            );
+                                            print("Local of down load path");
+                                            print(stringName);
+                                            // 6 add to document database
+
+                                            // await downloadData.download(
+                                            //   userId,
+                                            // );
+
+                                            _scaffoldKey.currentState
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  'Downloading',
+                                                  style: TextStyle(
+                                                    color: theme.accentColor,
+                                                  ),
+                                                ),
+                                                backgroundColor: Colors.black,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                          );
+                        },
+                      ),
+                      //
+
+                      SizedBox(
+                        width: 15,
+                      ),
+
                       //       //add to collection
                       Consumer<MediaModel>(
                         builder: (ctx, mediaModel, child) {
@@ -252,14 +453,14 @@ SizedBox(
                                 ? WaitingWidget()
                                 : snapshot.data == true
                                     ? Badge(
-                                      showBadge: false,
+                                        showBadge: false,
                                         child: Icon(
                                           Icons.library_add,
                                         ),
                                         badgeColor: theme.accentColor,
                                       )
                                     : Badge(
-                                      showBadge: false,
+                                        showBadge: false,
                                         child: IconButton(
                                           icon: Icon(
                                             Icons.library_add,
@@ -426,9 +627,9 @@ SizedBox(
                               _mediaModelProvider.id,
                             );
                             setState(() {
-                                _commentsArray.insert(0, comment);
+                              _commentsArray.insert(0, comment);
                             });
-                          
+
                             _commentController.text = '';
 
                             Navigator.of(context).pop();

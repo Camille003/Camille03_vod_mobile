@@ -24,6 +24,12 @@ class HistoryScreen extends StatelessWidget {
       listen: false,
     );
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'History',
+          style: Theme.of(context).appBarTheme.textTheme.headline1,
+        ),
+      ),
       body: FutureBuilder(
         future: historyProvider.fetchAndSetHistoryItems(),
         builder: (ctx, snapshot) {
@@ -49,16 +55,18 @@ class HistoryScreen extends StatelessWidget {
               ),
             );
           } else {
-            return ListView.builder(
-              itemBuilder: (context, index) {
-                return ArchivedWidget(
-                  id: historyData[index].id,
-                  author: historyData[index].author,
-                  name: historyData[index].name,
-                  imageUrl: historyData[index].imageUrl,
-                );
-              },
-              itemCount: historyProvider.historyItems.length,
+            return Consumer<HistoryProvider>(
+              builder: (context, histProd, child) => ListView.builder(
+                itemBuilder: (context, index) {
+                  return ArchivedWidget(
+                    id: histProd.historyItems[index].id,
+                    author: histProd.historyItems[index].author,
+                    name: histProd.historyItems[index].name,
+                    imageUrl: histProd.historyItems[index].imageUrl,
+                  );
+                },
+                itemCount: historyProvider.historyItems.length,
+              ),
             );
           }
         },

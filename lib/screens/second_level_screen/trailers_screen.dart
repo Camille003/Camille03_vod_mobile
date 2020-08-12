@@ -12,7 +12,7 @@ import '../../widgets/video_widget.dart';
 import '../../widgets/waiting_widget.dart';
 
 //providers
-import 'trailer_provider.dart';
+import '../../providers/trailer_provider.dart';
 
 class TrailerScreen extends StatelessWidget {
   @override

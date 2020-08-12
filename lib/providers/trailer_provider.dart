@@ -2,10 +2,10 @@ import 'package:flutter/widgets.dart';
 
 //third party
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:vidzone/providers/media_provider.dart';
+import './media_provider.dart';
 
 //models
-import '../../models/media_model.dart';
+import '../models/media_model.dart';
 
 class TrailerProvider extends MediaProvider with ChangeNotifier {
   final _fireStore = Firestore.instance;

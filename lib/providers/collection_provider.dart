@@ -43,10 +43,10 @@ class CollectionProvider with ChangeNotifier {
   }
 
   //remove from watch later
-  Future<void> removeFromWatchLater(String userId, String movieId) async {
+  Future<void> removeFromWatchLater(String movieId) async {
     try {
       final playLisRef = _firestore
-          .document(userId)
+          .document(_userId)
           .collection("collection")
           .document(movieId);
 

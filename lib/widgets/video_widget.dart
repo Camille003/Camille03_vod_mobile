@@ -13,6 +13,7 @@ import './../screens/third_level_screen/video_screen.dart';
 class VideoTileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+   // final platform = Theme.of(context).platform;
     final mediaProvider = Provider.of<MediaModel>(context);
     return GestureDetector(
       onTap: () {
