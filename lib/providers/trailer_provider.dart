@@ -5,14 +5,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import './media_provider.dart';
 
 //models
-import '../models/media_model.dart';
+import 'media_provider.dart';
 
-class TrailerProvider extends MediaProvider with ChangeNotifier {
+class TrailerProvider with ChangeNotifier {
   final _fireStore = Firestore.instance;
   final _identifier = "media";
 
-  List<MediaModel> _trailers = [];
-  List<MediaModel> get trailers {
+  List<MediaProvider> _trailers = [];
+  List<MediaProvider> get trailers {
     return [..._trailers];
   }
 
@@ -29,7 +29,7 @@ class TrailerProvider extends MediaProvider with ChangeNotifier {
       final trailerItems = moviesSnapshot.documents;
       trailerItems.forEach((trailerItem) {
         trailer1.add(
-          MediaModel.fromFireBaseDocument(trailerItem.data),
+          MediaProvider.fromFireBaseDocument(trailerItem.data),
         );
       });
 
@@ -40,7 +40,7 @@ class TrailerProvider extends MediaProvider with ChangeNotifier {
     }
   }
 
-  MediaModel getMediaById(String id) {
+  MediaProvider getMediaById(String id) {
     return _trailers.firstWhere((mediaElement) => mediaElement.id == id);
   }
 }

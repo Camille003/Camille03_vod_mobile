@@ -16,7 +16,7 @@ class HistoryProvider with ChangeNotifier {
   List<HistoryModel> _historyItems = [];
 
   List<HistoryModel> get historyItems {
-    return [..._historyItems];
+    return [..._historyItems].reversed.toList();
   }
 
   Future<void> fetchAndSetHistoryItems() async {

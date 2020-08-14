@@ -18,7 +18,7 @@ class DownloadProvider with ChangeNotifier {
 
   List<DownloadModel> _downLoads = [];
   List<DownloadModel> get downloads {
-    return [..._downLoads];
+    return [..._downLoads].reversed.toList();
   }
 
   Future<void> download(DownloadModel download) async {

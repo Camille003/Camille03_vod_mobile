@@ -7,14 +7,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import './media_provider.dart';
 
 //models
-import '../models/media_model.dart';
+import 'media_provider.dart';
 
-class MusicProvider extends MediaProvider with ChangeNotifier {
+class MusicProvider  with ChangeNotifier {
   final _fireStore = Firestore.instance;
   final _identifier = "media";
 
-  List<MediaModel> _musics = [];
-  List<MediaModel> get musics {
+  List<MediaProvider> _musics = [];
+  List<MediaProvider> get musics {
     return [..._musics];
   }
 
@@ -31,7 +31,7 @@ class MusicProvider extends MediaProvider with ChangeNotifier {
       final musicItems = moviesSnapshot.documents;
       musicItems.forEach((musicItem) {
         musics1.add(
-          MediaModel.fromFireBaseDocument(musicItem.data),
+          MediaProvider.fromFireBaseDocument(musicItem.data),
         );
       });
 
@@ -42,7 +42,7 @@ class MusicProvider extends MediaProvider with ChangeNotifier {
     }
   }
 
-  MediaModel getMediaById(String id) {
+  MediaProvider getMediaById(String id) {
     return _musics.firstWhere((mediaElement) => mediaElement.id == id);
   }
 }

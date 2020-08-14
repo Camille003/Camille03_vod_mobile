@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 //third party
 import 'package:provider/provider.dart';
 import 'package:vidzone/helpers/error_pop_up_helper.dart';
-import 'package:vidzone/models/media_model.dart';
+import 'package:vidzone/providers/media_provider.dart';
 import 'package:vidzone/widgets/error_widget.dart';
 import 'package:vidzone/widgets/no_content_widget.dart';
 
@@ -48,7 +48,7 @@ class TrailerScreen extends StatelessWidget {
           }
           return ListView.builder(
             itemBuilder: (context, index) {
-              return ChangeNotifierProvider<MediaModel>.value(
+              return ChangeNotifierProvider<MediaProvider>.value(
                 value: trailerData[index],
                 child: VideoTileWidget(),
               );

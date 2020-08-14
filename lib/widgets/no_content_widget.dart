@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vidzone/widgets/svg_widget.dart';
+import './svg_widget.dart';
 
 class NoContentWidget extends StatelessWidget {
   final String label;

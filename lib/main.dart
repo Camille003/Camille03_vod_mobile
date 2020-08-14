@@ -14,7 +14,7 @@ import './providers/movie_provider.dart';
 import './providers/comment_provider.dart';
 import './providers/download_provider.dart';
 import './providers/trailer_provider.dart';
-
+import './providers/payment_provider.dart';
 //screens
 import './screens/landing_screen.dart';
 import './screens/login_screen.dart';
@@ -106,6 +106,23 @@ class Vidzone extends StatelessWidget {
             ..update(
               authData.id,
             ),
+        ),
+
+         ChangeNotifierProxyProvider<AuthProvider, PaymentProvider>(
+          create: (ctx) {
+            print("PaymentProvider provider create");
+            return PaymentProvider(
+              '',
+            );
+          },
+          update: (ctx, authData, paymentData) {
+            print("paymentData provider updated");
+            print('${authData.id} fuck');
+            return paymentData
+              ..update(
+                authData.id,
+              );
+          },
         ),
       ],
       child: Consumer<AuthProvider>(

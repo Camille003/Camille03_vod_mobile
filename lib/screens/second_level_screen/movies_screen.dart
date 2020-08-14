@@ -10,7 +10,7 @@ import '../../helpers/error_pop_up_helper.dart';
 import '../../providers/movie_provider.dart';
 
 //models
-import '../../models/media_model.dart';
+import '../../providers/media_provider.dart';
 
 //widgets
 import '../../widgets/error_widget.dart';
@@ -52,7 +52,7 @@ class MoviesScreen extends StatelessWidget {
           } else {
             return ListView.builder(
               itemBuilder: (context, index) {
-                return ChangeNotifierProvider<MediaModel>.value(
+                return ChangeNotifierProvider<MediaProvider>.value(
                   value: movieData[index],
                   child: VideoTileWidget(),
                 );

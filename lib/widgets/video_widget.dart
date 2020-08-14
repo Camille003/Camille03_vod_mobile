@@ -5,7 +5,7 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:provider/provider.dart';
 
 //model
-import '../models/media_model.dart';
+import '../providers/media_provider.dart';
 
 //screen
 import './../screens/third_level_screen/video_screen.dart';
@@ -14,7 +14,7 @@ class VideoTileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
    // final platform = Theme.of(context).platform;
-    final mediaProvider = Provider.of<MediaModel>(context);
+    final mediaProvider = Provider.of<MediaProvider>(context);
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(

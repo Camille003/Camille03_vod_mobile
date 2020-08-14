@@ -14,7 +14,7 @@ class CollectionProvider with ChangeNotifier {
   List<CollectionModel> _collectionItems = [];
 
   List<CollectionModel> get collectionItems {
-    return [..._collectionItems];
+    return [..._collectionItems].reversed.toList();
   }
 
   Future<void> fetchAndSetCollectionItems() async {

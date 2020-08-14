@@ -22,10 +22,12 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../constants/styles.dart';
 
 //models
-import '../../models/media_model.dart';
 import '../../models/comments_model.dart';
+import '../../models/media_model.dart';
+
 
 //providers
+import '../../providers/media_provider.dart';
 import '../../providers/user_provider.dart';
 import '../../providers/comment_provider.dart';
 import '../../providers/download_provider.dart';
@@ -64,8 +66,8 @@ class _VideoScreenState extends State<VideoScreen> {
 
   //for playing the media
   FlickManager flickManager;
-  MediaModel _mediaModelProvider;
-  MediaData _mediaData;
+  MediaProvider _mediaModelProvider;
+  MediaModel _mediaData;
 
   //providers
   CommentsProvider _commentProvider;
@@ -140,7 +142,7 @@ class _VideoScreenState extends State<VideoScreen> {
     //media data
 
     Future.delayed(Duration.zero, () {
-      _mediaModelProvider = Provider.of<MediaModel>(context, listen: false);
+      _mediaModelProvider = Provider.of<MediaProvider>(context, listen: false);
       _mediaModelProvider.fetchAndSetMediaContent().then(
             (value) => setState(() {
               _mediaData = _mediaModelProvider.media;
@@ -289,7 +291,7 @@ class _VideoScreenState extends State<VideoScreen> {
                     children: [
                       Spacer(),
 
-                      Consumer<MediaModel>(
+                      Consumer<MediaProvider>(
                         builder: (ctx, mediaModel, child) {
                           return FutureBuilder(
                             future: mediaModel.hasBeenLiked(userId),
@@ -451,7 +453,7 @@ class _VideoScreenState extends State<VideoScreen> {
                       ),
 
                       //       //add to collection
-                      Consumer<MediaModel>(
+                      Consumer<MediaProvider>(
                         builder: (ctx, mediaModel, child) {
                           return FutureBuilder<bool>(
                             future: mediaModel.hasBeenSaved(userId),

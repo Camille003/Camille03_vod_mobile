@@ -4,17 +4,17 @@ import 'package:flutter/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 //models
-import '../models/media_model.dart';
+import 'media_provider.dart';
 
 //provider
 import './media_provider.dart';
 
-class MovieProvider extends MediaProvider with ChangeNotifier {
+class MovieProvider  with ChangeNotifier {
   final _fireStore = Firestore.instance;
   final _identifier = "media";
 
-  List<MediaModel> _movies = [];
-  List<MediaModel> get movies {
+  List<MediaProvider> _movies = [];
+  List<MediaProvider> get movies {
     return [..._movies];
   }
 
@@ -31,7 +31,7 @@ class MovieProvider extends MediaProvider with ChangeNotifier {
       final movieItems = moviesSnapshot.documents;
       movieItems.forEach((movieItem) {
         movies1.add(
-          MediaModel.fromFireBaseDocument(movieItem.data),
+          MediaProvider.fromFireBaseDocument(movieItem.data),
         );
       });
 
@@ -44,7 +44,7 @@ class MovieProvider extends MediaProvider with ChangeNotifier {
     }
   }
 
-  MediaModel getMediaById(String id) {
+  MediaProvider getMediaById(String id) {
     return _movies.firstWhere((mediaElement) => mediaElement.id == id);
   }
 }

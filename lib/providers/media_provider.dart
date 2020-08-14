@@ -1,20 +1,87 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
-class MediaProvider {
-  final _media = Firestore.instance.collection("media");
-  final _playListRefs = Firestore.instance.collection("collection");
-  final _likesRef = Firestore.instance.collection("likes");
+//models
+import '../models/collection_model.dart';
+import '../models/media_model.dart';
+// import '../models/download_model.dart';
+import '../models/history_model.dart';
+
+final _fireStore = Firestore.instance.collection("media");
+final _playListRef = Firestore.instance.collection("collection");
+final _likesRef = Firestore.instance.collection("likes");
+final _hsitoryRef = Firestore.instance.collection("history");
+
+
+class MediaProvider with ChangeNotifier {
+  final String id;
+  final String name;
+  final String author;
+  final String imageUrl;
+  final int duration;
+
+  final int numberOfViews;
+  final DateTime uploadDate;
+
+  int numberOfLikes;
+
+  MediaModel _media;
+
+  MediaModel get media {
+    return _media;
+  }
+
+  MediaProvider({
+    this.id,
+    this.name,
+    this.author,
+    this.imageUrl,
+    this.duration,
+    this.numberOfLikes,
+    this.numberOfViews,
+    this.uploadDate,
+  });
+
+  MediaProvider.fromFireBaseDocument(Map<String, dynamic> firebaseDocument)
+      : id = firebaseDocument['id'],
+        name = firebaseDocument['name'],
+        author = (firebaseDocument['author']),
+        imageUrl = firebaseDocument['imageUrl'],
+        duration = (firebaseDocument['duration']),
+        numberOfLikes = firebaseDocument['numberOfLikes'],
+        numberOfViews = firebaseDocument['numberOfViews'],
+        uploadDate = DateTime.parse(firebaseDocument['uploadDate']);
+
+  Future<void> fetchAndSetMediaContent() async {
+    try {
+      final document = await _fireStore.document(id).get();
+
+      if (document.exists) {
+        _media = MediaModel.fromFireBaseDocument(document.data);
+        print("Exists");
+      }
+
+      notifyListeners();
+    } catch (e, s) {
+      print(e);
+      print(s);
+      throw e;
+    }
+  }
 
   //check if saved
-  Future<bool> hasBeenSaved(String userId, String vidId) async {
+  Future<bool> hasBeenSaved(String userId) async {
+    print("has been saved  runnig");
+
     try {
-      final playlistQuerySnapshot = await _playListRefs
+      final playlistQuerySnapshot = await _playListRef
           .document(userId)
           .collection("collection")
-          .document(vidId)
+          .document(id)
           .get();
 
       if (!playlistQuerySnapshot.exists) {
+        print(playlistQuerySnapshot.data);
         return false;
       }
       return true;
@@ -25,12 +92,13 @@ class MediaProvider {
   }
 
   //check if video has been liked
-  Future<bool> hasBeenLiked(String vidId, String userId) async {
+  Future<bool> hasBeenLiked(String userId) async {
+    print("has been liked  runnig");
     try {
       final likedDocument = await _likesRef
           .document(userId)
           .collection("likes")
-          .document(vidId)
+          .document(id)
           .get();
 
       if (!likedDocument.exists) {
@@ -44,9 +112,12 @@ class MediaProvider {
   }
 
 //like a video
-  Future<void> likeVideo(String userId, String vidId) async {
+  Future<void> likeVideo(String userId) async {
+    print("Like video runnig");
     try {
-      final mediaRef = _media.document(vidId);
+      final mediaRef = _fireStore.document(
+        id,
+      );
 
       await mediaRef.updateData(
         {
@@ -55,11 +126,15 @@ class MediaProvider {
           ),
         },
       );
-      await _likesRef.document(userId).setData(
+      await _likesRef.document(userId).collection("likes").document(id).setData(
         {
-          'vidId': vidId,
+          'id': id,
         },
       );
+
+      numberOfLikes = numberOfLikes + 1;
+
+      notifyListeners();
     } catch (e) {
       print("Get video");
       throw e;
@@ -67,9 +142,11 @@ class MediaProvider {
   }
 
   //+1 view
-  Future<void> addView(String userId, String vidId) async {
+  Future<void> addView(String userId) async {
     try {
-      final mediaRef = _media.document(vidId);
+      final mediaRef = _fireStore.document(
+        id,
+      );
       await mediaRef.updateData(
         {
           'numberOfViews': FieldValue.increment(
@@ -83,40 +160,48 @@ class MediaProvider {
     }
   }
 
-  //get history
-
-  //add to watch later
-  Future<void> addToWatchLater(String userId, String movieId) async {
-  
+  //add to user watched collection
+  Future<void> watched(String userId) async {
+    print("add to watched  runnig");
     try {
-      final playList = _playListRefs
+      await _hsitoryRef
           .document(userId)
-          .collection("collection")
-          .document(movieId);
-
-      await playList.setData({
-        'id' : movieId
-      });
+          .collection("history")
+          .document(id)
+          .setData(
+            HistoryModel(
+              id: id,
+              name: name,
+              imageUrl: imageUrl,
+              author: author,
+            ).toFireBaseDocument(),
+          );
     } catch (e) {
       throw e;
     }
   }
 
-  //remove from watch later
-  Future<void> removeFromWatchLater(String userId, String movieId) async {
+  //add to watch later
+  Future<void> addToWatchLater(String userId) async {
+    print("add to collection  runnig");
     try {
-      final playLisRef = _playListRefs
-          .document(userId)
-          .collection("collection")
-          .document(movieId);
+      final playList =
+          _playListRef.document(userId).collection("collection").document(id);
 
-      final doc = await playLisRef.get();
+      CollectionModel model = CollectionModel(
+        id: id,
+        name: name,
+        imageUrl: imageUrl,
+        author: author,
+      );
 
-      if (doc.exists) {
-        await playLisRef.delete();
-      }
+      await playList.setData(
+        model.toFireBaseDocument(),
+      );
+
+      notifyListeners();
     } catch (e) {
-      throw (e);
+      throw e;
     }
   }
 }
