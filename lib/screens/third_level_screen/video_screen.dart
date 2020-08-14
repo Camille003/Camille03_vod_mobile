@@ -54,9 +54,10 @@ class VideoScreen extends StatefulWidget with WidgetsBindingObserver {
 class _VideoScreenState extends State<VideoScreen> {
 //for downloads
   ReceivePort _port = ReceivePort();
-  bool _isLoading;
-  bool _permissionReady;
   String _localPath;
+
+  //timer
+  Timer _additionTimer;
 
   //controller
   TextEditingController _commentController;
@@ -102,17 +103,6 @@ class _VideoScreenState extends State<VideoScreen> {
       if (debug) {
         print('UI Isolate Callback: $data');
       }
-      // String id = data[0];
-      // DownloadTaskStatus status = data[1];
-      // int progress = data[2];
-
-      // final task = _tasks?.firstWhere((task) => task.taskId == id);
-      // if (task != null) {
-      //   setState(() {
-      //     task.status = status;
-      //     task.progress = progress;
-      //   });
-      // }
     });
   }
 
@@ -136,13 +126,12 @@ class _VideoScreenState extends State<VideoScreen> {
 
   @override
   void initState() {
+    //Timer to add videos to recent
+
     //for download
     _bindBackgroundIsolate();
 
     FlutterDownloader.registerCallback(downloadCallback);
-
-    _isLoading = true;
-    _permissionReady = false;
 
     //text controller
     _commentController = TextEditingController();
@@ -180,6 +169,12 @@ class _VideoScreenState extends State<VideoScreen> {
         userId = _userProvider.user.id;
         print(username);
       });
+
+      //set up timer to fire up after 10 seconds
+      _additionTimer = Timer(Duration(seconds: 10), () {
+        _mediaModelProvider.addView(userId);
+        _mediaModelProvider.watched(userId);
+      });
     });
 
     super.initState();
@@ -191,6 +186,7 @@ class _VideoScreenState extends State<VideoScreen> {
     flickManager.dispose();
     _commentController.dispose();
     IsolateNameServer.removePortNameMapping('downloader_send_port');
+  
     super.dispose();
   }
 
@@ -388,6 +384,18 @@ class _VideoScreenState extends State<VideoScreen> {
                                               return;
                                             }
                                             //5 if we do download
+                                            _scaffoldKey.currentState
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  'Downloading',
+                                                  style: TextStyle(
+                                                    color: theme.accentColor,
+                                                  ),
+                                                ),
+                                                backgroundColor: Colors.black,
+                                              ),
+                                            );
                                             print("Local path");
                                             _localPath =
                                                 (await _findLocalPath()) +
@@ -404,6 +412,7 @@ class _VideoScreenState extends State<VideoScreen> {
 
                                             final stringName =
                                                 await FlutterDownloader.enqueue(
+                                              fileName: _mediaData.name,
                                               url:
                                                   'https://res.cloudinary.com/dohp2afc4/video/upload/v1589451729/John_Wick_Official_Trailer__1__2014__-_Keanu_Reeves__Willem_Dafoe_Movie_HD_480p_lkzpys.mp4',
                                               savedDir: _localPath,
@@ -417,12 +426,11 @@ class _VideoScreenState extends State<VideoScreen> {
                                             // await downloadData.download(
                                             //   userId,
                                             // );
-
                                             _scaffoldKey.currentState
                                                 .showSnackBar(
                                               SnackBar(
                                                 content: Text(
-                                                  'Downloading',
+                                                  'Download Complete',
                                                   style: TextStyle(
                                                     color: theme.accentColor,
                                                   ),

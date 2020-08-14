@@ -18,7 +18,7 @@ import './providers/trailer_provider.dart';
 //screens
 import './screens/landing_screen.dart';
 import './screens/login_screen.dart';
-import './screens/sign_up.dart';
+import 'screens/sign_up.dart';
 import './screens/welcome_screen.dart';
 import './screens/home_screen.dart';
 import './screens/splash_screen.dart';
@@ -26,6 +26,12 @@ import './screens/third_level_screen/collection_screen.dart';
 import './screens/third_level_screen/history_screen.dart';
 import './screens/third_level_screen/video_screen.dart';
 import './screens/third_level_screen/downloads_screen.dart';
+import './screens/third_level_screen/setting_screen.dart';
+import './screens/fouth_level_screen/request_screen.dart';
+import './screens/fouth_level_screen/privacy_screen.dart';
+import './screens/fouth_level_screen/policy_screen.dart';
+import './screens/fouth_level_screen/payments_screen.dart';
+import './screens/fouth_level_screen/downloads_video_screen.dart';
 
 const debug = true;
 void main() async {
@@ -160,6 +166,12 @@ class Vidzone extends StatelessWidget {
               HistoryScreen.routeName: (ctx) => HistoryScreen(),
               CollectionScreen.routeName: (ctx) => CollectionScreen(),
               DownloadScreen.routeName: (ctx) => DownloadScreen(),
+              SettingScreen.routeName: (ctx) => SettingScreen(),
+              DownloadVideoScreen.routeName: (ctx) => DownloadVideoScreen(),
+              PaymentScreen.routeName: (ctx) => PaymentScreen(),
+              PolicyScreen.routeName: (ctx) => PolicyScreen(),
+              PrivacyScreen.routeName: (ctx) => PrivacyScreen(),
+              RequestScreen.routeName: (ctx) => RequestScreen(),
             },
           );
         },

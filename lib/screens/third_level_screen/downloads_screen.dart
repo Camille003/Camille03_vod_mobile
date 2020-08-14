@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
+
+//third party
 import 'package:provider/provider.dart';
-import 'package:vidzone/providers/download_provider.dart';
-import 'package:vidzone/widgets/archived_widget.dart';
-import 'package:vidzone/widgets/error_widget.dart';
-import 'package:vidzone/widgets/no_content_widget.dart';
-import 'package:vidzone/widgets/waiting_widget.dart';
+
+//providers
+import '../../providers/download_provider.dart';
+
+//widgets
+import '../../widgets/archived_widget.dart';
+import '../../widgets/error_widget.dart';
+import '../../widgets/no_content_widget.dart';
+import '../../widgets/waiting_widget.dart';
 
 class DownloadScreen extends StatelessWidget {
   static const routeName = "downloadScreen";
   @override
   Widget build(BuildContext context) {
-    final downloadProvider =
-        Provider.of<DownloadProvider>(context, listen: false);
+    final downloadProvider = Provider.of<DownloadProvider>(
+      context,
+      listen: false,
+    );
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -65,26 +73,27 @@ class DownloadScreen extends StatelessWidget {
                     ),
                     confirmDismiss: (dimissDirection) {
                       return showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text(
-                                'Are you sure you want to delete from collection',
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(
+                              'Are you sure you want to delete from collection',
+                            ),
+                            actions: [
+                              FlatButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(true),
+                                child: Text('Yes'),
                               ),
-                              actions: [
-                                FlatButton(
-                                  onPressed: () =>
-                                      Navigator.of(context).pop(true),
-                                  child: Text('Yes'),
-                                ),
-                                FlatButton(
-                                  onPressed: () =>
-                                      Navigator.of(context).pop(false),
-                                  child: Text('No'),
-                                )
-                              ],
-                            );
-                          });
+                              FlatButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                child: Text('No'),
+                              )
+                            ],
+                          );
+                        },
+                      );
                     },
                     onDismissed: (direction) {
                       downloadData.delete(downloadData.downloads[index].id);

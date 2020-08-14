@@ -1,4 +1,6 @@
 import 'package:flutter/widgets.dart';
+
+//third party
 import 'package:sembast/sembast.dart';
 
 //model
@@ -55,7 +57,7 @@ class DownloadProvider with ChangeNotifier {
     }
   }
 
-  Future delete(String id) async {
+  Future<void> delete(String id) async {
     try {
       final finder = Finder(
         filter: Filter.equals(

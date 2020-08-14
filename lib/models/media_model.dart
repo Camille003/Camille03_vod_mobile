@@ -2,10 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:vidzone/models/collection_model.dart';
 import 'package:vidzone/models/download_model.dart';
+import 'package:vidzone/models/history_model.dart';
 
 final _fireStore = Firestore.instance.collection("media");
 final _playListRef = Firestore.instance.collection("collection");
 final _likesRef = Firestore.instance.collection("likes");
+final _hsitoryRef = Firestore.instance.collection("history");
 
 class MediaData {
   final String id;
@@ -99,9 +101,8 @@ class MediaModel with ChangeNotifier {
           .document(id)
           .get();
 
-     
       if (!playlistQuerySnapshot.exists) {
-         print(playlistQuerySnapshot.data);
+        print(playlistQuerySnapshot.data);
         return false;
       }
       return true;
@@ -176,6 +177,27 @@ class MediaModel with ChangeNotifier {
       );
     } catch (e) {
       print("Get video");
+      throw e;
+    }
+  }
+
+  //add to user watched collection
+  Future<void> watched(String userId) async {
+    print("add to watched  runnig");
+    try {
+      await _hsitoryRef
+          .document(userId)
+          .collection("history")
+          .document(id)
+          .setData(
+            HistoryModel(
+              id: id,
+              name: name,
+              imageUrl: imageUrl,
+              author: author,
+            ).toFireBaseDocument(),
+          );
+    } catch (e) {
       throw e;
     }
   }

@@ -20,23 +20,24 @@ class HistoryProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetHistoryItems() async {
-    final historyArray = [];
-    final querySnapShot = await _firestore
-        .document(_userId)
-        .collection(_identifier)
-        .getDocuments();
-    if (querySnapShot.documents.isNotEmpty) {
-      querySnapShot.documents.forEach((snapShot) {
-        historyArray.add(
-          HistoryModel.fromFireBase(
-            snapShot.data,
-          ),
-        );
-      });
-    }
-    _historyItems = [...historyArray];
-    notifyListeners();
-    try {} catch (e) {
+    try {
+      final historyArray = [];
+      final querySnapShot = await _firestore
+          .document(_userId)
+          .collection(_identifier)
+          .getDocuments();
+      if (querySnapShot.documents.isNotEmpty) {
+        querySnapShot.documents.forEach((snapShot) {
+          historyArray.add(
+            HistoryModel.fromFireBase(
+              snapShot.data,
+            ),
+          );
+        });
+      }
+      _historyItems = [...historyArray];
+      notifyListeners();
+    } catch (e) {
       throw e;
     }
   }
