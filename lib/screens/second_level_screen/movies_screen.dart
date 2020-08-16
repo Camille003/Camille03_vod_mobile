@@ -30,7 +30,7 @@ class MoviesScreen extends StatelessWidget {
             return Center(child : WaitingWidget());
           } else if (snapshot.hasError) {
             print(snapshot.error);
-            //showPopUpError(context);
+            showPopUpError(context);
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(

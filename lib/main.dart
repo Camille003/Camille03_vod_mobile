@@ -26,7 +26,7 @@ import './screens/third_level_screen/collection_screen.dart';
 import './screens/third_level_screen/history_screen.dart';
 import './screens/third_level_screen/video_screen.dart';
 import './screens/third_level_screen/downloads_screen.dart';
-import './screens/third_level_screen/setting_screen.dart';
+import 'screens/third_level_screen/setting_screen.dart';
 import './screens/fouth_level_screen/request_screen.dart';
 import './screens/fouth_level_screen/privacy_screen.dart';
 import './screens/fouth_level_screen/policy_screen.dart';

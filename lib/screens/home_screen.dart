@@ -13,6 +13,7 @@ import './second_level_screen/music_screen.dart';
 import './second_level_screen/trailers_screen.dart';
 import './second_level_screen/library_screen.dart';
 import './second_level_screen/news_screen.dart';
+import 'third_level_screen/setting_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = "homeScreen";
@@ -43,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _pageController = PageController();
+    Provider.of<UserProvider>(context).fetchAndSetUser();
   }
 
   @override
@@ -121,12 +123,27 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             onPressed: () {},
           ),
-          IconButton(
-            icon: Icon(
+          Consumer<UserProvider>(
+            builder: (context, userProd, child) {
+              return IconButton(
+                icon: CircleAvatar(
+                  child: child,
+                  backgroundImage: NetworkImage(
+                    userProd.user.imageUrl,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    SettingScreen.routeName,
+                  );
+                },
+              );
+            },
+            child: Icon(
               Icons.settings,
               color: Colors.black54,
             ),
-            onPressed: null,
           ),
         ],
       ),

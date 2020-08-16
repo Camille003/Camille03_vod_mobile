@@ -25,7 +25,6 @@ class UserProvider with ChangeNotifier {
   UserProvider(this._id);
 
   Future<void> fetchAndSetUser() async {
-   
     try {
       final firebaseDocument =
           await _fireStore.collection("users").document(_id).get();

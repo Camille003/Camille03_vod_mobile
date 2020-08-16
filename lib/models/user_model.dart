@@ -113,7 +113,9 @@ class UserModel {
               : (accountType == AccountType.Basic) ? "BASIC" : "PREMIUM",
           "nextPaymentDate": paymentDate
               .add(
-                Duration(days: 30),
+                Duration(
+                  days: 30,
+                ),
               )
               .toIso8601String(),
         },
