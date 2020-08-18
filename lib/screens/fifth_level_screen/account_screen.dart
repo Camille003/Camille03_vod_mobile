@@ -3,16 +3,22 @@ import 'package:flutter/material.dart';
 //third party
 import 'package:provider/provider.dart';
 
+
 //providers
 import '../../providers/user_provider.dart';
 
 //widgets
 import '../../widgets/waiting_widget.dart';
 
+//screens
 import './account_detail_screen.dart';
 import './lock_screen.dart';
 
+//helpers
+import '../../helpers/payment_pop_up.dart';
+
 class AccountScreen extends StatefulWidget {
+  static const routeName = "accountScreen";
   @override
   _AccountScreenState createState() => _AccountScreenState();
 }
@@ -22,15 +28,15 @@ class _AccountScreenState extends State<AccountScreen> {
   UserProvider _provider;
   bool _isLoading;
 
-  void checkPassword(String entredPassword) {
+  bool checkPassword(String entredPassword) {
     final password = _provider.user.password;
     if (password == entredPassword) {
       setState(() {
         _isAuth = true;
       });
-      return;
+      return true;
     }
-    return;
+    return false;
   }
 
   @override
@@ -38,11 +44,11 @@ class _AccountScreenState extends State<AccountScreen> {
     setState(() {
       _isLoading = true;
     });
-    _provider = Provider.of<UserProvider>(context);
+    _provider = Provider.of<UserProvider>(context, listen: false);
     _provider.fetchAndSetUser().then(
           (value) => setState(
             () {
-              _isLoading = true;
+              _isLoading = false;
             },
           ),
         );
@@ -51,19 +57,14 @@ class _AccountScreenState extends State<AccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Account',
-          style: theme.appBarTheme.textTheme.headline1,
-        ),
-      ),
+      appBar: buildAppBar(context,"Account" ,center :true),
       body: _isLoading
           ? Center(
               child: WaitingWidget(),
             )
-          : _isAuth
+          : !_isAuth
               ? LockScreen(
                   checkPassword,
                 )

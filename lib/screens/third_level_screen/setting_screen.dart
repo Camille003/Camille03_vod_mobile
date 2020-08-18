@@ -1,4 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:vidzone/helpers/payment_pop_up.dart';
+
+//screens
+import '../fifth_level_screen/account_screen.dart';
+import '../fouth_level_screen/payments_screen.dart';
+import '../fouth_level_screen/policy_screen.dart';
+import '../fouth_level_screen/privacy_screen.dart';
+import '../fouth_level_screen/request_screen.dart';
+
+//widgets
 import '../../widgets/setting_tile_widget.dart';
 
 class SettingScreen extends StatelessWidget {
@@ -6,11 +16,9 @@ class SettingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Settings',
-          style: Theme.of(context).appBarTheme.textTheme.headline1,
-        ),
+     appBar: buildAppBar(
+        context,
+        'Settings',
       ),
       body: Column(
         children: [
@@ -19,7 +27,7 @@ class SettingScreen extends StatelessWidget {
               description: 'Manage your accounts personal details',
               descriptionIcon: Icons.person_outline,
               title: 'Account',
-              destination: '',
+              destination: AccountScreen.routeName,
             ),
           ),
           Expanded(
@@ -27,16 +35,15 @@ class SettingScreen extends StatelessWidget {
               description: 'Chat out your concerns',
               descriptionIcon: Icons.chat_bubble_outline,
               title: 'Requests',
-              destination: '',
+              destination: RequestScreen.routeName,
             ),
           ),
-          
           Expanded(
             child: SettingsTile(
               description: 'Switch accounts and get the best.',
               descriptionIcon: Icons.payment,
               title: 'Payments',
-              destination: '',
+              destination: PaymentScreen.routeName,
             ),
           ),
           Expanded(
@@ -44,15 +51,16 @@ class SettingScreen extends StatelessWidget {
               description: 'Find out what for and how your data is being used',
               descriptionIcon: Icons.priority_high,
               title: 'Privacy policy',
-              destination: '',
+              destination: PolicyScreen.routeName,
             ),
           ),
           Expanded(
             child: SettingsTile(
-              description: 'Find out the purpose aof vidzone and how to properly use it',
+              description:
+                  'Find out the purpose aof vidzone and how to properly use it',
               descriptionIcon: Icons.priority_high,
               title: 'Terms of usage',
-              destination: '',
+              destination: PrivacyScreen.routeName,
             ),
           ),
         ],

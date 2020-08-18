@@ -21,35 +21,47 @@ class PaymentWidget extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Card(
-      margin: const EdgeInsets.all(10),
       elevation: 5,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(
           10,
         ),
       ),
-      child: Column(
-        children: [
-          Text(
-            'Order number: $id',
+      child: Container(
+         // height: 150,
+         padding: const EdgeInsets.all(10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Order number: $id',
+                style: theme.textTheme.bodyText2,
+              ),
+              Text(
+                'Account type: $accountType',
+                style: theme.textTheme.bodyText2,
+              ),
+              Text(
+                'Price: $price',
+                style: theme.textTheme.bodyText2,
+              ),
+              Text(
+                '${timeAgo.format(
+                  dateTime,
+                )}',
+                style: theme.textTheme.bodyText2,
+              ),
+              Text(
+                'Valid from: ${DateFormat.yMMMd().format(dateTime)} -  ${DateFormat.yMMMd().format(dateTime.add(Duration(days: 30)))}',
+                style: theme.textTheme.bodyText2,
+              ),
+            ],
           ),
-          Text(
-            'Account type: $accountType',
-          ),
-          Text(
-            'Price: $accountType',
-          ),
-          Text(
-            timeAgo.format(
-              dateTime,
-            ),
-          ),
-          Text(
-            'Valid from: ${DateFormat.yMMMd().format(dateTime)} -  ${DateFormat.yMMMd(dateTime.add(Duration(days: 30)))}',
-          ),
-        ],
-      ),
+        ),
+      
     );
   }
 }

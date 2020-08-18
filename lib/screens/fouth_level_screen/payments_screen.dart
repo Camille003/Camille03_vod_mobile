@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 //third party
 import 'package:provider/provider.dart';
 import 'package:vidzone/emums/account_type_enum.dart';
+import 'package:vidzone/helpers/payment_pop_up.dart';
 
 //providers
 import '../../providers/payment_provider.dart';
@@ -28,7 +29,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   List<PaymentModel> payments;
   PaymentProvider _provider;
   UserProvider _userProd;
-  bool _isInit;
+  bool _isLoading = true;
   String _userName;
 
   //payments
@@ -41,12 +42,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
   @override
   void initState() {
     setState(() {
-      _isInit = true;
+      _isLoading = true;
     });
+
     _provider = Provider.of<PaymentProvider>(context, listen: false);
     _provider.fetchandSetPayment().then((value) {
       setState(() {
-        _isInit = false;
+        _isLoading = false;
         payments = _provider.payments;
       });
     });
@@ -61,141 +63,156 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      body: _isInit
+      appBar: buildAppBar(context, 'Payments'),
+      body: _isLoading
           ? Center(
               child: WaitingWidget(),
             )
-          : Column(
-              children: [
-                payments.isEmpty
-                    ? Padding(
-                        padding: const EdgeInsets.all(
-                          10,
-                        ),
-                        child: Center(
-                          child: NoContentWidget(
-                            'No payments made',
+          : Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10),
+              child: Column(
+                children: [
+                  payments.isEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.all(
+                            10,
+                          ),
+                          child: Center(
+                            child: NoContentWidget(
+                              'No payments made',
+                            ),
+                          ),
+                        )
+                      : Expanded(
+                          child: Consumer<PaymentProvider>(
+                            builder: (ctx, payData, child) {
+                              return ListView.builder(
+                                itemCount: payData.payments.length,
+                                itemBuilder: (ctx, index) {
+                                  return PaymentWidget(
+                                    id: payData.payments[index].id,
+                                    price: payData.payments[index].price,
+                                    accountType:
+                                        payData.payments[index].accountType,
+                                    dateTime:
+                                        payData.payments[index].creationDate,
+                                  );
+                                },
+                              );
+                            },
                           ),
                         ),
-                      )
-                    : Expanded(
-                        child: Consumer<PaymentProvider>(
-                          builder: (ctx, payData, child) {
-                            return ListView.builder(
-                              itemBuilder: (ctx, index) {
-                                return PaymentWidget(
-                                  id: payData.payments[index].id,
-                                  price: payData.payments[index].price,
-                                  accountType:
-                                      payData.payments[index].accountType,
-                                  dateTime:
-                                      payData.payments[index].creationDate,
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                SizedBox(
-                  width: double.infinity,
-                  child: MainButtonWidget(
-                    label: 'Pay off',
-                    color: theme.accentColor,
-                    onTap: () {
-                      showGeneralDialog(
+                  SizedBox(
+                    width: double.infinity,
+                    child: MainButtonWidget(
+                      label: 'Pay off',
+                      color: theme.accentColor,
+                      onTap: () {
+                        showDialog(
                           context: context,
-                          barrierDismissible: true,
-                          barrierLabel: MaterialLocalizations.of(context)
-                              .modalBarrierDismissLabel,
-                          barrierColor: Colors.black45,
-                          transitionDuration: const Duration(milliseconds: 200),
-                          pageBuilder: (BuildContext buildContext,
-                              Animation animation,
-                              Animation secondaryAnimation) {
-                            return Center(
+                          builder: (BuildContext context) {
+                            return Dialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  20.0,
+                                ),
+                              ), //this right here
                               child: Container(
-                                width: MediaQuery.of(context).size.width - 10,
-                                height: MediaQuery.of(context).size.height - 80,
-                                padding: EdgeInsets.all(20),
-                                color: Colors.white,
-                                child: Column(
-                                  children: [
-                                    CheckboxListTile(
-                                      activeColor: theme.accentColor,
-                                      controlAffinity:
-                                          ListTileControlAffinity.trailing,
-                                      secondary: Icon(Icons.money_off),
-                                      value: _basic,
-                                      onChanged: (bool option) {
-                                        setState(() {
-                                          _basic = option;
-                                          _premium = option;
-                                        });
-                                      },
-                                      title: Text(
-                                        'Basic',
-                                      ),
-                                    ),
-                                    CheckboxListTile(
-                                      secondary: Icon(Icons.money_off),
-                                      controlAffinity:
-                                          ListTileControlAffinity.leading,
-                                      value: _premium,
-                                      onChanged: (bool option) {
-                                        setState(() {
-                                          _premium = option;
-                                          _basic = !option;
-                                        });
-                                      },
-                                      activeColor: theme.accentColor,
-                                      title: Text(
-                                        'Premium',
-                                      ),
-                                    ),
-                                    RaisedButton(
-                                      onPressed: (_basic || _premium)
-                                          ? () async {
-                                              final accountType = _basic
-                                                  ? AccountType.Basic
-                                                  : AccountType.Premium;
-                                              final paymentDate =
-                                                  DateTime.now();
-                                                  
-                                              await _provider.makePayment({
-                                                'customerName': _userName,
-                                                'creationDate': DateTime.now(),
-                                                'price': _basic
-                                                    ? _basicPrice
-                                                    : _premiumPrcie,
-                                                'accountType': _basic
-                                                    ? AccountType.Basic
-                                                    : AccountType.Premium
-                                              });
-                                              await _userProd.user.makePayment(
-                                                accountType,
-                                                paymentDate,
-                                              );
-                                              Navigator.of(context).pop();
-                                            }
-                                          : null,
-                                      child: Text(
-                                        "Save",
-                                        style: TextStyle(
-                                          color: Colors.white,
+                                height: 200,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: StatefulBuilder(
+                                    builder: (context, _setState) => Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        CheckboxListTile(
+                                          activeColor: theme.accentColor,
+                                          controlAffinity:
+                                              ListTileControlAffinity.trailing,
+                                          secondary: Icon(Icons.money_off),
+                                          value: _basic,
+                                          onChanged: (bool option) {
+                                            print(option);
+                                            _setState(() {
+                                              _basic = option;
+                                              _premium = !option;
+                                            });
+                                          },
+                                          title: Text(
+                                            'Basic',
+                                          ),
                                         ),
-                                      ),
-                                      color: const Color(0xFF1BC0C5),
-                                    )
-                                  ],
+                                        CheckboxListTile(
+                                          activeColor: theme.accentColor,
+                                          secondary: Icon(Icons.money_off),
+                                          controlAffinity:
+                                              ListTileControlAffinity.leading,
+                                          value: _premium,
+                                          onChanged: (bool option) {
+                                            _setState(() {
+                                              _premium = option;
+                                              _basic = !option;
+                                            });
+                                          },
+                                          title: Text(
+                                            'Premium',
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 320.0,
+                                          child: MainButtonWidget(
+                                            label: 'Pay off',
+                                            textStyle:
+                                                theme.textTheme.bodyText1,
+                                            onTap: (_basic || _premium)
+                                                ? () async {
+                                                    final accountType = _basic
+                                                        ? AccountType.Basic
+                                                        : AccountType.Premium;
+                                                    final paymentDate =
+                                                        DateTime.now();
+
+                                                    await _provider
+                                                        .makePayment({
+                                                      'customerName': _userName,
+                                                      'creationDate':
+                                                          paymentDate,
+                                                      'price': _basic
+                                                          ? _basicPrice
+                                                          : _premiumPrcie,
+                                                      'accountType': accountType
+                                                    });
+                                                    await _userProd.user
+                                                        .makePayment(
+                                                      accountType,
+                                                      paymentDate,
+                                                    );
+                                                    Navigator.of(context).pop();
+                                                  }
+                                                : null,
+                                            color: theme.accentColor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
                             );
-                          });
-                    },
-                    textStyle: theme.textTheme.bodyText2,
+                          },
+                        );
+
+                        //
+                      },
+                      textStyle: theme.textTheme.bodyText2,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
     );
   }

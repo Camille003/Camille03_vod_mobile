@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 //third party
 import 'package:provider/provider.dart';
+import 'package:vidzone/helpers/payment_pop_up.dart';
 // import 'package:bubble/bubble.dart';
 
 //model
@@ -44,11 +45,9 @@ class _RequestScreenState extends State<RequestScreen> {
     final requestProvider =
         Provider.of<RequestProvider>(context, listen: false);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Collection',
-          style: theme.appBarTheme.textTheme.headline1,
-        ),
+      appBar: buildAppBar(
+        context,
+        'Requests',
       ),
       body: Column(
         children: [

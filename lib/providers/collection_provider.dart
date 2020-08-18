@@ -54,6 +54,7 @@ class CollectionProvider with ChangeNotifier {
 
       if (doc.exists) {
         await playLisRef.delete();
+        print("Deleyed");
       }
 
       _collectionItems.removeWhere(

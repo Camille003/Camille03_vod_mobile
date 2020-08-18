@@ -22,7 +22,9 @@ class CommentsProvider with ChangeNotifier {
           .collection(_identifier)
           .document(movieId)
           .collection(_identifier)
-          .add(comment.toFireBaseDocument());
+          .add(
+            comment.toFireBaseDocument(),
+          );
       if (response.documentID.isNotEmpty) {
         print("No error");
       } else {
@@ -35,7 +37,7 @@ class CommentsProvider with ChangeNotifier {
   }
 
   Future<void> fecthAndSetComments(String movieId) async {
-    List commentList = [];
+    List<CommentModel> commentList = [];
     try {
       final commentsQuerySnapshot = await _fireStore
           .collection(_identifier)
@@ -45,10 +47,18 @@ class CommentsProvider with ChangeNotifier {
 
       if (commentsQuerySnapshot.documents.isNotEmpty) {
         commentsQuerySnapshot.documents.forEach((commentDocumentSnapshot) {
-          commentList
-              .add(CommentModel.fromFireBaseDocument(commentDocumentSnapshot));
+          commentList.add(
+            CommentModel.fromFireBaseDocument(commentDocumentSnapshot),
+          );
         });
         // commentList.reversed.toList();
+        // _comments = [...commentList.reversed.toList()];
+
+        commentList.sort(
+          (a, b) => a.creationDate.compareTo(
+            b.creationDate,
+          ),
+        );
         _comments = [...commentList.reversed.toList()];
       }
 

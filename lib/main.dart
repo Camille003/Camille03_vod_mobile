@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 //third party
 import 'package:provider/provider.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:vidzone/screens/fifth_level_screen/account_screen.dart';
 
 //providers
 import './providers/auth_provider.dart';
@@ -26,7 +27,7 @@ import './screens/third_level_screen/collection_screen.dart';
 import './screens/third_level_screen/history_screen.dart';
 import './screens/third_level_screen/video_screen.dart';
 import './screens/third_level_screen/downloads_screen.dart';
-import 'screens/third_level_screen/setting_screen.dart';
+import './screens/third_level_screen/setting_screen.dart';
 import './screens/fouth_level_screen/request_screen.dart';
 import './screens/fouth_level_screen/privacy_screen.dart';
 import './screens/fouth_level_screen/policy_screen.dart';
@@ -107,8 +108,7 @@ class Vidzone extends StatelessWidget {
               authData.id,
             ),
         ),
-
-         ChangeNotifierProxyProvider<AuthProvider, PaymentProvider>(
+        ChangeNotifierProxyProvider<AuthProvider, PaymentProvider>(
           create: (ctx) {
             print("PaymentProvider provider create");
             return PaymentProvider(
@@ -133,6 +133,9 @@ class Vidzone extends StatelessWidget {
             theme: ThemeData.light().copyWith(
               primaryColor: Colors.white,
               appBarTheme: AppBarTheme(
+                iconTheme: ThemeData.light().iconTheme.copyWith(
+                      color: Colors.redAccent[700],
+                    ),
                 textTheme: TextTheme(
                   headline1: TextStyle(
                     //fontFamily: 'Roboto',
@@ -184,6 +187,7 @@ class Vidzone extends StatelessWidget {
               CollectionScreen.routeName: (ctx) => CollectionScreen(),
               DownloadScreen.routeName: (ctx) => DownloadScreen(),
               SettingScreen.routeName: (ctx) => SettingScreen(),
+              AccountScreen.routeName: (ctx) => AccountScreen(),
               DownloadVideoScreen.routeName: (ctx) => DownloadVideoScreen(),
               PaymentScreen.routeName: (ctx) => PaymentScreen(),
               PolicyScreen.routeName: (ctx) => PolicyScreen(),

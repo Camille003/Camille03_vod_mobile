@@ -2,17 +2,21 @@ import 'package:flutter/material.dart';
 
 //third party
 import 'package:provider/provider.dart';
+
+
 import 'package:vidzone/helpers/error_pop_up_helper.dart';
-import 'package:vidzone/providers/media_provider.dart';
-import 'package:vidzone/widgets/error_widget.dart';
-import 'package:vidzone/widgets/no_content_widget.dart';
+
+
 
 //widgets
 import '../../widgets/video_widget.dart';
 import '../../widgets/waiting_widget.dart';
+import '../../widgets/error_widget.dart';
+import '../../widgets/no_content_widget.dart';
 
 //providers
 import '../../providers/music_provider.dart';
+import '../../providers/media_provider.dart';
 
 class MusicScreen extends StatelessWidget {
   @override

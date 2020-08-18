@@ -22,8 +22,12 @@ class PaymentModel {
       : id = snapshot['id'],
         customerId = snapshot['customerId'],
         customerName = snapshot['customerName'],
-        creationDate = DateTime.tryParse(snapshot['creationDate']),
-        price = snapshot['price'],
+        creationDate = DateTime.parse(
+          snapshot['creationDate'],
+        ),
+        price = double.tryParse(
+          snapshot['price'],
+        ),
         accountType = (snapshot['accountType'] == "FREE")
             ? AccountType.Free
             : (snapshot['accountType'] == "BASIC")

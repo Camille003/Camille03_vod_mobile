@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 //enum types
 import '../../emums/account_type_enum.dart';
@@ -11,34 +12,53 @@ class AccountDetailScreen extends StatelessWidget {
   AccountDetailScreen(this.user);
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Card(
-          child: CircleAvatar(
-            backgroundImage: NetworkImage(user.imageUrl),
-            child: Icon(
-              Icons.person_outline,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Card(
+              elevation: 5,
+              shape: CircleBorder(),
+              child: Container(
+                height: 100,
+                width: 100,
+                child: CircleAvatar(
+                  backgroundImage: NetworkImage(user.imageUrl),
+                ),
+              ),
             ),
-          ),
+            Card(
+              child: ListTile(
+                title: Text(
+                  user.name,
+                ),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                title: Text(
+                  user.email,
+                ),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                title: Text(
+                  '${user.accountType == AccountType.Premium ? "Premium" : "Basic"}',
+                ),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                title: Text(
+                  'Next payment ${DateFormat.yMMMd().format(user.nextPaymentDate)}',
+                ),
+              ),
+            ),
+          ],
         ),
-        ListTile(
-          title: Text(
-            user.name,
-          ),
-        ),
-        ListTile(
-          title: Text(
-            user.email,
-          ),
-        ),
-        ListTile(
-          title: Text(
-              '${user.accountType == AccountType.Premium ? "Premium" : "Basic"}'),
-        ),
-        ListTile(
-          title: Text('Next payment ${user.nextPayment}'),
-        ),
-      ],
+      ),
     );
   }
 }

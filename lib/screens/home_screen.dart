@@ -13,7 +13,7 @@ import './second_level_screen/music_screen.dart';
 import './second_level_screen/trailers_screen.dart';
 import './second_level_screen/library_screen.dart';
 import './second_level_screen/news_screen.dart';
-import 'third_level_screen/setting_screen.dart';
+import './third_level_screen/setting_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = "homeScreen";
@@ -24,6 +24,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   PageController _pageController;
   int _pageIndex = 0;
+  bool isLoading = false;
   void onTap(int pageIndex) {
     _pageController.jumpToPage(
       pageIndex,
@@ -42,9 +43,17 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
   @override
   void initState() {
+    setState(() {
+      isLoading = true;
+    });
     super.initState();
     _pageController = PageController();
-    Provider.of<UserProvider>(context).fetchAndSetUser();
+    Provider.of<UserProvider>(context, listen: false)
+        .fetchAndSetUser()
+        .then((value) => setState(() {
+              isLoading = false;
+               print(Provider.of<UserProvider>(context, listen: false).user);
+            }));
   }
 
   @override
@@ -123,28 +132,27 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             onPressed: () {},
           ),
-          Consumer<UserProvider>(
-            builder: (context, userProd, child) {
-              return IconButton(
-                icon: CircleAvatar(
-                  child: child,
-                  backgroundImage: NetworkImage(
-                    userProd.user.imageUrl,
+          if (!isLoading)
+            Consumer<UserProvider>(
+              builder: (context, userProd, child) {
+                print(userProd.user.imageUrl);
+                return IconButton(
+                  icon: CircleAvatar(
+                    
+                    backgroundImage: NetworkImage(
+                      userProd.user.imageUrl,
+                    ),
                   ),
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    SettingScreen.routeName,
-                  );
-                },
-              );
-            },
-            child: Icon(
-              Icons.settings,
-              color: Colors.black54,
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      SettingScreen.routeName,
+                    );
+                  },
+                );
+              },
+             
             ),
-          ),
         ],
       ),
       body: Column(

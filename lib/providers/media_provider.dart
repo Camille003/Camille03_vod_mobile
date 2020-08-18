@@ -12,7 +12,6 @@ final _playListRef = Firestore.instance.collection("collection");
 final _likesRef = Firestore.instance.collection("likes");
 final _hsitoryRef = Firestore.instance.collection("history");
 
-
 class MediaProvider with ChangeNotifier {
   final String id;
   final String name;
@@ -51,6 +50,21 @@ class MediaProvider with ChangeNotifier {
         numberOfLikes = firebaseDocument['numberOfLikes'],
         numberOfViews = firebaseDocument['numberOfViews'],
         uploadDate = DateTime.parse(firebaseDocument['uploadDate']);
+
+ static  Future<MediaProvider> fetchMediaDataForCollection(String id) async {
+    try {
+      final document = await _fireStore.document(id).get();
+
+      if (!document.exists) {
+        return null;
+      }
+      return MediaProvider.fromFireBaseDocument(document.data);
+    } catch (e, s) {
+      print(e);
+      print(s);
+      throw e;
+    }
+  }
 
   Future<void> fetchAndSetMediaContent() async {
     try {

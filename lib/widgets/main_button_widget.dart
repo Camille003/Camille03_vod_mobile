@@ -38,6 +38,7 @@ class MainButtonWidget extends StatelessWidget {
                 child: Text(
                   label,
                   style: textStyle,
+                  textAlign: TextAlign.center,
                 ),
               )
             : Icon(

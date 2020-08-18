@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vidzone/helpers/payment_pop_up.dart';
 
 import '../../constants/policy_constant.dart';
 
@@ -7,17 +8,15 @@ class PolicyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context) ;
+    final theme = Theme.of(context);
     return Scaffold(
+      appBar: buildAppBar(context, 'Policy'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: <Widget>[
             Container(
-              child: Text(
-                terms_of_use,
-                style: theme.textTheme.bodyText2
-              ),
+              child: Text(terms_of_use, style: theme.textTheme.bodyText2),
             ),
             Container(
               child: Text(

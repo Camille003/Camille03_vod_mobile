@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 //third party
 import 'package:provider/provider.dart';
+import 'package:vidzone/helpers/payment_pop_up.dart';
 
 //providers
 import '../../providers/download_provider.dart';
@@ -21,12 +22,9 @@ class DownloadScreen extends StatelessWidget {
       listen: false,
     );
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Downloads',
-          style: Theme.of(context).appBarTheme.textTheme.headline1,
-        ),
-        textTheme: Theme.of(context).appBarTheme.textTheme,
+     appBar: buildAppBar(
+        context,
+        'Donwloads',
       ),
       body: FutureBuilder(
         future: downloadProvider.fectchAndSetDownloads(),
@@ -99,10 +97,10 @@ class DownloadScreen extends StatelessWidget {
                       downloadData.delete(downloadData.downloads[index].id);
                     },
                     child: ArchivedWidget(
-                      id: downloadData.downloads[index].id,
-                      author: downloadData.downloads[index].author,
-                      name: downloadData.downloads[index].name,
-                      imageUrl: downloadData.downloads[index].imageUrl,
+                      // id: downloadData.downloads[index].id,
+                      // author: downloadData.downloads[index].author,
+                      // name: downloadData.downloads[index].name,
+                      // imageUrl: downloadData.downloads[index].imageUrl,
                     ),
                   );
                 },

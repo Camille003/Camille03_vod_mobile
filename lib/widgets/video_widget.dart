@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 //third party
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:provider/provider.dart';
+import 'package:vidzone/widgets/waiting_widget.dart';
 
 //model
 import '../providers/media_provider.dart';
@@ -13,12 +15,16 @@ import './../screens/third_level_screen/video_screen.dart';
 class VideoTileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-   // final platform = Theme.of(context).platform;
-    final mediaProvider = Provider.of<MediaProvider>(context);
+    // final platform = Theme.of(context).platform;
+    final mediaProvider = Provider.of<MediaProvider>(
+      context,
+      listen: false,
+    );
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
+            fullscreenDialog: false,
             builder: (ctx) => ChangeNotifierProvider.value(
               value: mediaProvider,
               child: VideoScreen(),
@@ -26,12 +32,6 @@ class VideoTileWidget extends StatelessWidget {
           ),
         );
       },
-      // onTap: () {
-      //   Navigator.of(context).pushNamed(
-      //     VideoScreen.routeName,
-      //     arguments: mediaProvider,
-      //   );
-      // },
       child: Container(
         height: 300,
         child: Card(
@@ -42,12 +42,21 @@ class VideoTileWidget extends StatelessWidget {
           elevation: 1,
           child: Column(
             children: [
-              Expanded(
+              Flexible(
+                fit: FlexFit.loose,
                 flex: 2,
-                child: Image.network(
-                  mediaProvider.imageUrl,
-                  fit: BoxFit.fill,
+                child: Center(
+                  child: CachedNetworkImage(
+                    imageUrl: mediaProvider.imageUrl,
+                    placeholder: (context, url) => WaitingWidget(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
                 ),
+                // child: Image.network(
+                //   mediaProvider.imageUrl,
+                //   fit: BoxFit.fill,
+                //   //loadingBuilder: (context, widget, chunck) => WaitingWidget(),
+                // ),
               ),
               Container(
                 padding: EdgeInsets.only(

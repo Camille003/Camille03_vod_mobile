@@ -25,7 +25,6 @@ import '../../constants/styles.dart';
 import '../../models/comments_model.dart';
 import '../../models/media_model.dart';
 
-
 //providers
 import '../../providers/media_provider.dart';
 import '../../providers/user_provider.dart';
@@ -176,6 +175,7 @@ class _VideoScreenState extends State<VideoScreen> {
       _additionTimer = Timer(Duration(seconds: 10), () {
         _mediaModelProvider.addView(userId);
         _mediaModelProvider.watched(userId);
+        print("Added to watch and viewed");
       });
     });
 
@@ -188,7 +188,7 @@ class _VideoScreenState extends State<VideoScreen> {
     flickManager.dispose();
     _commentController.dispose();
     IsolateNameServer.removePortNameMapping('downloader_send_port');
-  
+
     super.dispose();
   }
 
@@ -211,9 +211,7 @@ class _VideoScreenState extends State<VideoScreen> {
                     leading: IconButton(
                       icon: Icon(Icons.arrow_back),
                       onPressed: () {
-                        Navigator.of(context).popUntil(
-                          ModalRoute.withName(HomeScreen.routeName),
-                        );
+                        Navigator.of(context).pop();
                       },
                     ),
                     backgroundColor: Colors.black,

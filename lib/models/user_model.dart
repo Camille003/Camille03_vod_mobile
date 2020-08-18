@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import '../emums/account_type_enum.dart';
@@ -51,7 +53,7 @@ class UserModel {
       'status': (status == UserStatus.Active) ? "ACTIVE" : "DISABLED",
       'password': password,
       'email': email,
-      'nextPaymentDate': nextPaymentDate
+      'nextPaymentDate': nextPaymentDate.toIso8601String(),
     };
   }
 
@@ -123,5 +125,12 @@ class UserModel {
     } catch (e) {
       throw e;
     }
+  }
+
+  //for debugging puposes
+  @override
+  String toString() {
+    // TODO: implement toString
+    return jsonEncode(toFireBaseDocument());
   }
 }

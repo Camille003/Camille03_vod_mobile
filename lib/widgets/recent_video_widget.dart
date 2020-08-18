@@ -13,23 +13,36 @@ class RecentItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       height: 150,
       width: 150,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        // mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Expanded(
             child: Image.network(
               imageUrl,
+              fit: BoxFit.cover,
             ),
           ),
+          SizedBox(
+            height: 5,
+          ),
           Text(
-            name,
+            '${name[0].toUpperCase() + name.substring(1)}',
+            softWrap: true,
+            style: theme.textTheme.bodyText1,
             overflow: TextOverflow.ellipsis,
+          ),
+          SizedBox(
+            height: 5,
           ),
           Text(
             author,
             overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.bodyText2,
           ),
         ],
       ),

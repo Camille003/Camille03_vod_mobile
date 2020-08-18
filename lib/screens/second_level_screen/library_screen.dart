@@ -20,91 +20,107 @@ class LibraryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final historyProvider =
         Provider.of<HistoryProvider>(context, listen: false);
+    double totalWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.all(
-          10,
+          8.0,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Recent',
-            ),
-            FutureBuilder(
-              future: historyProvider.fetchAndSetHistoryItems(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: WaitingWidget(),
-                  );
-                } else if (snapshot.connectionState == ConnectionState.done) {
-                  final listItems = historyProvider.getRecentItems();
-                  if (listItems.isEmpty) {
-                    return Container(
-                      height: 80,
-                      width: double.infinity,
-                      child: Text(
-                        'No history yet.',
-                      ),
-                      alignment: Alignment.centerLeft,
-                    );
-                  } else {
-                    return ListView.builder(
-                      itemCount: listItems.length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (ctx, i) => RecentItemWidget(
-                        author: listItems[i].author,
-                        name: listItems[i].name,
-                        imageUrl: listItems[i].imageUrl,
-                      ),
-                    );
-                  }
-                }
-              },
-            ),
-            Divider(
-              height: 2,
-              color: Colors.black,
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.only(left: 0),
-              onTap: () {
-                Navigator.of(context).pushNamed(HistoryScreen.routeName);
-              },
-              leading: Icon(
-                Icons.history,
+        child:  Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Recent',
               ),
-              title: Text(
-                'History',
+              Container(
+                height: 170,
+              
+                child: FutureBuilder(
+                  future: historyProvider.fetchAndSetHistoryItems(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: WaitingWidget(),
+                      );
+                    } else if (snapshot.connectionState == ConnectionState.done) {
+                      final listItems = historyProvider.getRecentItems();
+                      if (listItems.isEmpty) {
+                        // Text(
+                        //   'No history',
+                        // );
+                        return Container(
+                          height: totalWidth * 0.7,
+                          width: double.infinity,
+                          child: Text(
+                            'No history yet.',
+                          ),
+                          alignment: Alignment.centerLeft,
+                        );
+                      } else {
+                        return Container(
+                          padding: EdgeInsets.symmetric(vertical:totalWidth * 0.05,),
+                          child: ListView.separated(
+                            separatorBuilder: (context, index) => SizedBox(
+                              width: 10,
+                            ),
+                            itemCount: listItems.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (ctx, i) => RecentItemWidget(
+                              author: listItems[i].author,
+                              name: listItems[i].name,
+                              imageUrl: listItems[i].imageUrl,
+                            ),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                ),
               ),
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.only(left: 0),
-              onTap: () {
-                Navigator.of(context).pushNamed(CollectionScreen.routeName);
-              },
-              leading: Icon(
-                Icons.library_add,
+              Divider(
+                height: 2,
+                color: Colors.black,
               ),
-              title: Text(
-                'Collection',
+              ListTile(
+                contentPadding: EdgeInsets.only(left: 0),
+                onTap: () {
+                  Navigator.of(context).pushNamed(HistoryScreen.routeName);
+                },
+                leading: Icon(
+                  Icons.history,
+                ),
+                title: Text(
+                  'History',
+                ),
               ),
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.only(left: 0),
-              onTap: () {
-                Navigator.of(context).pushNamed(DownloadScreen.routeName);
-              },
-              leading: Icon(
-                Icons.file_download,
+              ListTile(
+                contentPadding: EdgeInsets.only(left: 0),
+                onTap: () {
+                  Navigator.of(context)
+                      .pushNamed(CollectionScreen.routeName, arguments: 'Hello');
+                },
+                leading: Icon(
+                  Icons.library_add,
+                ),
+                title: Text(
+                  'Collection',
+                ),
               ),
-              title: Text(
-                'Downloads',
+              ListTile(
+                contentPadding: EdgeInsets.only(left: 0),
+                onTap: () {
+                  Navigator.of(context).pushNamed(DownloadScreen.routeName);
+                },
+                leading: Icon(
+                  Icons.file_download,
+                ),
+                title: Text(
+                  'Downloads',
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        
       ),
     );
   }

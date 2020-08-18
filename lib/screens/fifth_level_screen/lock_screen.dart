@@ -17,8 +17,11 @@ class _LockScreenState extends State<LockScreen> {
     if (_controller.text.isEmpty) {
       return;
     }
-    widget.checkPassword(_controller.text);
-    _controller.text = '';
+    if (widget.checkPassword(_controller.text)) {
+      _controller.text = '';
+
+      return;
+    }
   }
 
   @override
@@ -26,11 +29,19 @@ class _LockScreenState extends State<LockScreen> {
     final theme = Theme.of(context);
     final media = MediaQuery.of(context);
     return Container(
+      padding: EdgeInsets.all(
+        10,
+      ),
       width: double.infinity,
       height: media.size.height * 0.8,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Text(
+            'Please authenticate yourself',
+          ),
           TextFormField(
+            textAlign: TextAlign.center,
             controller: _controller,
             decoration: InputDecoration(
               suffixIcon: Icon(
@@ -39,9 +50,16 @@ class _LockScreenState extends State<LockScreen> {
               labelText: 'Enter your passwod',
             ),
           ),
+          SizedBox(
+            height: 30,
+          ),
           MainButtonWidget(
+            label: 'Confirm',
             color: theme.accentColor,
-            onTap: onTap,
+            onTap: () {
+              FocusScope.of(context).requestFocus(FocusNode());
+              onTap();
+            },
             textStyle: theme.textTheme.bodyText1,
           ),
         ],

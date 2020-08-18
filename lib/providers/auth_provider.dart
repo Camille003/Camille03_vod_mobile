@@ -47,11 +47,12 @@ class AuthProvider with ChangeNotifier {
       password: password,
     );
 
+    print(account.displayName);
     //3 store the result in a map
     final userData = {
       'id': authResult.user.uid,
       'email': account.email,
-      'diaplayName': account.displayName,
+      'displayName': account.displayName,
       'imageUrl': account.photoUrl,
       'password': password,
       'creationDate': DateTime.now().toIso8601String(),

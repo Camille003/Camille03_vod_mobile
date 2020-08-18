@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vidzone/helpers/payment_pop_up.dart';
 import '../../constants/privacy_constant.dart';
 
 class PrivacyScreen extends StatelessWidget {
@@ -6,13 +7,11 @@ class PrivacyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context) ;
+    final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Privacy',
-          style: theme.appBarTheme.textTheme.headline1,
-        ),
+      appBar: buildAppBar(
+        context,
+        'Privacy',
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
@@ -21,7 +20,7 @@ class PrivacyScreen extends StatelessWidget {
             Container(
               child: Text(
                 privacy,
-                style:theme.textTheme.bodyText2,
+                style: theme.textTheme.bodyText2,
               ),
             ),
             Container(
