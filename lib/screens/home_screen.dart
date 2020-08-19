@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .fetchAndSetUser()
         .then((value) => setState(() {
               isLoading = false;
-               print(Provider.of<UserProvider>(context, listen: false).user);
+              
             }));
   }
 
@@ -135,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
           if (!isLoading)
             Consumer<UserProvider>(
               builder: (context, userProd, child) {
-                print(userProd.user.imageUrl);
+               
                 return IconButton(
                   icon: CircleAvatar(
                     

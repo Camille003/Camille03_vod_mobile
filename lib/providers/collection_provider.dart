@@ -18,7 +18,7 @@ class CollectionProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetCollectionItems() async {
-    print(_userId);
+  
 
     try {
       final collectionArray = [];
@@ -54,7 +54,7 @@ class CollectionProvider with ChangeNotifier {
 
       if (doc.exists) {
         await playLisRef.delete();
-        print("Deleyed");
+      
       }
 
       _collectionItems.removeWhere(

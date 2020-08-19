@@ -13,10 +13,13 @@ import 'package:badges/badges.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:video_player/video_player.dart';
+import 'package:vidzone/models/download_model.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:expandable/expandable.dart';
+import 'package:sticky_and_expandable_list/sticky_and_expandable_list.dart';
 
 //constants
 import '../../constants/styles.dart';
@@ -168,14 +171,12 @@ class _VideoScreenState extends State<VideoScreen> {
       _userProvider.fetchAndSetUser().then((value) {
         username = _userProvider.user.name;
         userId = _userProvider.user.id;
-        print(username);
       });
 
       //set up timer to fire up after 10 seconds
       _additionTimer = Timer(Duration(seconds: 10), () {
         _mediaModelProvider.addView(userId);
         _mediaModelProvider.watched(userId);
-        print("Added to watch and viewed");
       });
     });
 
@@ -233,6 +234,7 @@ class _VideoScreenState extends State<VideoScreen> {
                           },
                           child: Container(
                             child: FlickVideoPlayer(
+                              
                               flickManager: flickManager,
                               flickVideoWithControls: FlickVideoWithControls(
                                 controls: FlickPortraitControls(),
@@ -410,22 +412,29 @@ class _VideoScreenState extends State<VideoScreen> {
                                               savedDir.create();
                                             }
 
-                                            final stringName =
-                                                await FlutterDownloader.enqueue(
-                                              fileName: _mediaData.name,
+                                            await FlutterDownloader.enqueue(
+                                              fileName:
+                                                  _mediaData.name + ".mp4",
                                               url:
                                                   'https://res.cloudinary.com/dohp2afc4/video/upload/v1589451729/John_Wick_Official_Trailer__1__2014__-_Keanu_Reeves__Willem_Dafoe_Movie_HD_480p_lkzpys.mp4',
                                               savedDir: _localPath,
                                               showNotification: true,
                                               openFileFromNotification: true,
                                             );
-                                            print("Local of down load path");
-                                            print(stringName);
+
                                             // 6 add to document database
 
-                                            // await downloadData.download(
-                                            //   userId,
-                                            // );
+                                            await downloadData
+                                                .download(DownloadModel(
+                                              id: _mediaData.id,
+                                              name: _mediaData.name,
+                                              imageUrl: '',
+                                              author: _mediaData.author,
+                                              downloadPath: savedDir.path +
+                                                  "/" +
+                                                  _mediaData.name +
+                                                  ".mp4",
+                                            ));
                                             _scaffoldKey.currentState
                                                 .showSnackBar(
                                               SnackBar(
@@ -503,30 +512,37 @@ class _VideoScreenState extends State<VideoScreen> {
                 // description
 
                 Container(
-                  // height: 150,
                   padding: EdgeInsets.symmetric(
                     horizontal: 10,
                     vertical: 5,
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
+                  child: ExpandablePanel(
+                    theme: ExpandableThemeData(
+                        useInkWell: true, iconPadding: EdgeInsets.all(0)),
+                    header: Container(
+                      padding: EdgeInsets.all(0),
+                      margin: EdgeInsets.all(0),
+                      child: Text(
                         'Description',
                         style: textTheme.bodyText2,
                       ),
-                      Text(
-                        _mediaData.description,
-                        style: textTheme.bodyText1,
-                        softWrap: true,
-                      ),
-                    ],
+                    ),
+                    collapsed: Text(
+                      _mediaData.description.substring(0, 30) + "...",
+                      softWrap: true,
+                      style: textTheme.bodyText1,
+                    ),
+                    expanded: Text(
+                      _mediaData.description,
+                      style: textTheme.bodyText1,
+                      softWrap: true,
+                    ),
                   ),
                 ),
 
                 //comments block
                 Container(
+                  margin: EdgeInsets.only(top: 10),
                   padding: EdgeInsets.only(left: 10),
                   child: Row(
                     children: [
@@ -570,89 +586,116 @@ class _VideoScreenState extends State<VideoScreen> {
               ],
             ),
       floatingActionButton: FloatingActionButton(
-          foregroundColor: theme.accentColor,
-          backgroundColor: theme.primaryColor,
-          onPressed: () {
-            showModalBottomSheet(
-              context: context,
-              builder: (context) {
-                return SingleChildScrollView(
-                  child: Container(
-                    padding: EdgeInsets.all(20.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20.0),
-                        topRight: Radius.circular(20.0),
-                      ),
+        foregroundColor: theme.accentColor,
+        backgroundColor: theme.primaryColor,
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.all(20.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20.0),
+                      topRight: Radius.circular(20.0),
                     ),
-                    margin: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: TextField(
-                            maxLines: 4,
-                            minLines: 2,
-                            keyboardType: TextInputType.multiline,
-                            controller: _commentController,
-                            // textInputAction: TextInputAction.done,
-                            decoration: basicInputStyle.copyWith(
-                              labelText: 'Add a comment',
-                              labelStyle: textTheme.bodyText2,
-                              border: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: theme.accentColor,
-                                ),
+                  ),
+                  margin: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: TextField(
+                          maxLines: 4,
+                          minLines: 2,
+                          keyboardType: TextInputType.multiline,
+                          controller: _commentController,
+                          // textInputAction: TextInputAction.done,
+                          decoration: basicInputStyle.copyWith(
+                            labelText: 'Add a comment',
+                            labelStyle: textTheme.bodyText2,
+                            border: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: theme.accentColor,
                               ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: theme.accentColor,
-                                ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: theme.accentColor,
                               ),
                             ),
                           ),
                         ),
-                        IconButton(
-                          icon: Icon(
-                            Icons.send,
-                          ),
-                          onPressed: () async {
-                            if (_commentController.text.trim().isEmpty) {
-                              return;
-                            }
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.send,
+                        ),
+                        onPressed: () async {
+                          if (_commentController.text.trim().isEmpty) {
+                            return;
+                          }
+                          FocusScope.of(context).requestFocus(
+                            FocusNode(),
+                          );
+                          String commentText = _commentController.text;
+                          var comment = CommentModel(
+                            id: DateTime.now().toString(),
+                            creationDate: DateTime.now(),
+                            text: commentText,
+                            username: username,
+                          );
+                          await _commentProvider.createComment(
+                            comment,
+                            _mediaModelProvider.id,
+                          );
+                          setState(() {
+                            _commentsArray.insert(0, comment);
+                          });
 
-                            String commentText = _commentController.text;
-                            var comment = CommentModel(
-                              id: DateTime.now().toString(),
-                              creationDate: DateTime.now(),
-                              text: commentText,
-                              username: username,
-                            );
-                            await _commentProvider.createComment(
-                              comment,
-                              _mediaModelProvider.id,
-                            );
-                            setState(() {
-                              _commentsArray.insert(0, comment);
-                            });
+                          _commentController.text = '';
 
-                            _commentController.text = '';
-
-                            Navigator.of(context).pop();
-                          },
-                        )
-                      ],
-                    ),
+                          Navigator.of(context).pop();
+                        },
+                      )
+                    ],
                   ),
-                );
-              },
-            );
-          },
-          child: Icon(
-            Icons.chat_bubble,
-          )),
+                ),
+              );
+            },
+          );
+        },
+        child: Icon(
+          Icons.chat_bubble,
+        ),
+      ),
     );
   }
 }
+
+//Former desc
+// Container(
+//   // height: 150,
+//   padding: EdgeInsets.symmetric(
+//     horizontal: 10,
+//     vertical: 5,
+//   ),
+//   child: Column(
+//     mainAxisSize: MainAxisSize.min,
+//     crossAxisAlignment: CrossAxisAlignment.start,
+//     children: <Widget>[
+//       Text(
+//         'Description',
+//         style: textTheme.bodyText2,
+//       ),
+//       Text(
+//         _mediaData.description,
+//         style: textTheme.bodyText1,
+//         softWrap: true,
+//       ),
+//     ],
+//   ),
+// ),

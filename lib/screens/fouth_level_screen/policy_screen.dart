@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vidzone/helpers/payment_pop_up.dart';
+import 'package:vidzone/helpers/app_bar_helper.dart';
 
 import '../../constants/policy_constant.dart';
 

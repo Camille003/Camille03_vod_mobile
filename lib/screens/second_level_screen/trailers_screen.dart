@@ -1,3 +1,4 @@
+import 'package:animated_list_view_scroll/animated_list_view_scroll.dart';
 import 'package:flutter/material.dart';
 
 //third party
@@ -24,9 +25,9 @@ class TrailerScreen extends StatelessWidget {
         future: trailerProvider.fetchAndSetTrailers(),
         builder: (ctx, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child : WaitingWidget());
+            return Center(child: WaitingWidget());
           } else if (snapshot.hasError) {
-             //showPopUpError(context);
+            showPopUpError(context);
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(
@@ -46,15 +47,44 @@ class TrailerScreen extends StatelessWidget {
               ),
             );
           }
-          return ListView.builder(
+
+          return AnimatedListViewScroll(
+            itemCount: trailerProvider.trailers.length, //REQUIRED
+            itemHeight: 300,
+            animationOnReverse: true,
+            animationDuration: Duration(milliseconds: 200),
             itemBuilder: (context, index) {
-              return ChangeNotifierProvider<MediaProvider>.value(
-                value: trailerData[index],
-                child: VideoTileWidget(),
+              return AnimatedListViewItem(
+                key: GlobalKey(), //REQUIRED
+                index: index, //REQUIRED
+                animationBuilder: (context, index, controller) {
+                  Animation<Offset> animation = Tween<Offset>(
+                    begin: Offset(1.0, 0.0),
+                    end: Offset.zero,
+                  ).animate(
+                    controller,
+                  );
+                  return SlideTransition(
+                    position: animation,
+                    child: ChangeNotifierProvider<MediaProvider>.value(
+                      value: trailerData[index],
+                      child: VideoTileWidget(),
+                    ),
+                  );
+                },
               );
             },
-            itemCount: trailerProvider.trailers.length,
           );
+          //   return ListView.builder(
+          //     itemBuilder: (context, index) {
+          //       return ChangeNotifierProvider<MediaProvider>.value(
+          //         value: trailerData[index],
+          //         child: VideoTileWidget(),
+          //       );
+          //     },
+          //     itemCount: trailerProvider.trailers.length,
+          //   );
+          // },
         },
       ),
     );

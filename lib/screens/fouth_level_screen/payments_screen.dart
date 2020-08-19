@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 //third party
 import 'package:provider/provider.dart';
 import 'package:vidzone/emums/account_type_enum.dart';
-import 'package:vidzone/helpers/payment_pop_up.dart';
+import 'package:vidzone/helpers/app_bar_helper.dart';
 
 //providers
 import '../../providers/payment_provider.dart';
@@ -136,7 +136,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                           secondary: Icon(Icons.money_off),
                                           value: _basic,
                                           onChanged: (bool option) {
-                                            print(option);
+                                          
                                             _setState(() {
                                               _basic = option;
                                               _premium = !option;

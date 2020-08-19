@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 //third party
 import 'package:provider/provider.dart';
-import 'package:vidzone/helpers/payment_pop_up.dart';
+import 'package:vidzone/helpers/app_bar_helper.dart';
 
 //models
 import '../../models/history_model.dart';
@@ -61,7 +61,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return Scaffold(
       appBar: buildAppBar(
         context,
-        'Privacy',
+        'History',
       ),
       body: isLoading
           ? Center(

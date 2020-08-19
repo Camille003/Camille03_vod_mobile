@@ -34,7 +34,7 @@ class _SigUpScreenState extends State<SigUpScreen> {
   bool _isStrongPassword() {
     var password = _passwordConroller.text;
     password = password.trim();
-    print(password);
+  
 
     if (!isLength(password, 8) || !isAlphanumeric(password)) {
       setState(() {

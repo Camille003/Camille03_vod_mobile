@@ -38,8 +38,7 @@ class MovieProvider  with ChangeNotifier {
       _movies = [...movies1];
       notifyListeners();
     } catch (e,s) {
-      print(e);
-       print(s);
+      
       throw e;
     }
   }

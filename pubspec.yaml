@@ -51,6 +51,9 @@ dependencies:
   intl: ^0.16.1
   bubble: ^1.1.9+1
   cached_network_image: ^2.2.0+1
+  expandable: ^4.1.4
+  animated_list_view_scroll: ^1.0.2
+  sticky_and_expandable_list: ^0.2.1
 
 dev_dependencies:
   flutter_test:

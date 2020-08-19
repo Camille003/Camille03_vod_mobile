@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/widgets.dart';
 
 //third party
@@ -24,15 +26,16 @@ class DownloadProvider with ChangeNotifier {
   Future<void> download(DownloadModel download) async {
     try {
       await _mediaStore.add(await _db, download.toMap());
+      _downLoads.add(
+        download,
+      );
       notifyListeners();
     } catch (e) {
-      print(e);
       throw e;
     }
   }
 
   Future<bool> hasBeenDownloaded(String id) async {
-    print("Running has been downloaded");
     try {
       final finder = Finder(
         filter: Filter.equals(
@@ -46,10 +49,10 @@ class DownloadProvider with ChangeNotifier {
       );
 
       if (value != null) {
-         print("has been downloaded");
+        print("has been downloaded");
         return true;
       }
-       print("has not been downloaded");
+      print("has not been downloaded");
       return false;
     } catch (e) {
       print(e);
@@ -86,7 +89,14 @@ class DownloadProvider with ChangeNotifier {
 
       if (recordSnapshots.isNotEmpty) {
         recordSnapshots.forEach((element) {
-          downloads.add(DownloadModel.fromSembast(element.value));
+          var download = DownloadModel.fromSembast(
+            element.value,
+          );
+
+          if (File(download.downloadPath).existsSync()) {
+            print(download);
+            downloads.add(download);
+          }
         });
       }
 

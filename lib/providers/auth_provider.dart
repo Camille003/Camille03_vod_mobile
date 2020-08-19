@@ -47,7 +47,7 @@ class AuthProvider with ChangeNotifier {
       password: password,
     );
 
-    print(account.displayName);
+
     //3 store the result in a map
     final userData = {
       'id': authResult.user.uid,
@@ -76,15 +76,14 @@ class AuthProvider with ChangeNotifier {
 
     //2 chek if key id is stored on device
     if (prefs.containsKey('id')) {
-      print("Found key");
+     
       isLoggedIn = true;
       _id = prefs.getString('id');
-      print(_id);
-      return "login";
+     return "login";
     }
 
     //if not return false
-    print("No found");
+   
     return "not logged in";
   }
 }

@@ -1,4 +1,6 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 
 class DownloadModel {
@@ -7,6 +9,7 @@ class DownloadModel {
   final String imageUrl;
   final String author;
   final String downloadPath;
+  final DateTime downloadDate;
 
   DownloadModel({
     @required this.id,
@@ -14,6 +17,7 @@ class DownloadModel {
     @required this.imageUrl,
     @required this.author,
     @required this.downloadPath,
+    @required this.downloadDate,
   });
 
   DownloadModel.fromSembast(Map<String, dynamic> snapshot)
@@ -21,6 +25,7 @@ class DownloadModel {
         name = snapshot['name'],
         imageUrl = snapshot['imageUrl'],
         author = snapshot['author'],
+        downloadDate = snapshot['downloadDate'],
         downloadPath = snapshot['downloadPath'];
 
   Map<String, String> toMap() {
@@ -30,6 +35,14 @@ class DownloadModel {
       'imageUrl': imageUrl,
       'author': author,
       'downloadPath': downloadPath,
+      'downloaDate' : downloadDate.toIso8601String() ,
     };
+  }
+
+  @override
+  String toString() {
+    print(
+      jsonEncode({}),
+    );
   }
 }

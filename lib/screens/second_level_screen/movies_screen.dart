@@ -1,3 +1,4 @@
+import 'package:animated_list_view_scroll/animated_list_view_scroll.dart';
 import 'package:flutter/material.dart';
 
 //third party
@@ -27,9 +28,9 @@ class MoviesScreen extends StatelessWidget {
         future: movieProvider.fetchAndSetMovies(),
         builder: (ctx, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child : WaitingWidget());
+            return Center(child: WaitingWidget());
           } else if (snapshot.hasError) {
-            print(snapshot.error);
+          
             showPopUpError(context);
             return Padding(
               padding: const EdgeInsets.all(8.0),
@@ -39,7 +40,7 @@ class MoviesScreen extends StatelessWidget {
             );
           }
           final movieData = movieProvider.movies;
-          print(movieData);
+        
           if (movieData.isEmpty) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
@@ -50,14 +51,33 @@ class MoviesScreen extends StatelessWidget {
               ),
             );
           } else {
-            return ListView.builder(
+            return AnimatedListViewScroll(
+              itemCount: movieProvider.movies.length, //REQUIRED
+              itemHeight: 310,
+              animationOnReverse: true,
+              animationDuration: Duration(milliseconds: 200),
               itemBuilder: (context, index) {
-                return ChangeNotifierProvider<MediaProvider>.value(
-                  value: movieData[index],
-                  child: VideoTileWidget(),
+                return AnimatedListViewItem(
+                  key: GlobalKey(), //REQUIRED
+                  index: index, //REQUIRED
+                  animationBuilder: (context, index, controller) {
+                    Animation<Offset> animation = Tween<Offset>(
+                      begin: Offset(1.0, 0.0),
+                      end: Offset.zero,
+                    ).animate(
+                      controller,
+                    );
+
+                    return SlideTransition(
+                      position: animation,
+                      child: ChangeNotifierProvider<MediaProvider>.value(
+                        value: movieData[index],
+                        child: VideoTileWidget(),
+                      ),
+                    );
+                  },
                 );
               },
-              itemCount: movieProvider.movies.length,
             );
           }
         },
@@ -65,3 +85,27 @@ class MoviesScreen extends StatelessWidget {
     );
   }
 }
+
+// Animation<double> animation = Tween<double>(
+//   begin: 0.3,
+//   end: 0.9,
+// ).animate(
+//   controller,
+// );
+// FadeTransition(
+//   opacity: animation,
+//   child: ChangeNotifierProvider<MediaProvider>.value(
+//     value: movieData[index],
+//     child: VideoTileWidget(),
+//   ),
+// );
+
+// return ListView.builder(
+//   itemBuilder: (context, index) {
+//     return ChangeNotifierProvider<MediaProvider>.value(
+//       value: movieData[index],
+//       child: VideoTileWidget(),
+//     );
+//   },
+//   itemCount: movieProvider.movies.length,
+// );

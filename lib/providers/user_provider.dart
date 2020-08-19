@@ -19,7 +19,7 @@ class UserProvider with ChangeNotifier {
 
   void update(String id) {
     this._id = id;
-    print(this._id);
+   
   }
 
   UserProvider(this._id);
@@ -30,7 +30,7 @@ class UserProvider with ChangeNotifier {
           await _fireStore.collection("users").document(_id).get();
       if (firebaseDocument.exists) {
         _user = UserModel.fromFireBaseDocument(firebaseDocument.data);
-        print(_user.accountType);
+       
       }
       notifyListeners();
     } catch (e) {

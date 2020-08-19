@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 //third party
 import 'package:provider/provider.dart';
-import 'package:vidzone/helpers/payment_pop_up.dart';
+import 'package:vidzone/helpers/app_bar_helper.dart';
 
 //providers
 import '../../providers/download_provider.dart';
 
 //widgets
-import '../../widgets/archived_widget.dart';
+import '../../widgets/download_widget.dart';
 import '../../widgets/error_widget.dart';
 import '../../widgets/no_content_widget.dart';
 import '../../widgets/waiting_widget.dart';
@@ -35,7 +35,7 @@ class DownloadScreen extends StatelessWidget {
             );
           } else if (snapshot.hasError) {
             //showPopUpError(context);
-            print(snapshot.error);
+           
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(
@@ -59,14 +59,13 @@ class DownloadScreen extends StatelessWidget {
               return ListView.builder(
                 itemBuilder: (context, index) {
                   return Dismissible(
-                    key: ValueKey(
-                      downloadData.downloads[index].id,
-                    ),
+                    key: UniqueKey(),
                     background: Container(
                       alignment: Alignment.centerRight,
                       color: Colors.red,
                       child: Icon(
                         Icons.delete_forever,
+                        size: 23,
                       ),
                     ),
                     confirmDismiss: (dimissDirection) {
@@ -93,14 +92,16 @@ class DownloadScreen extends StatelessWidget {
                         },
                       );
                     },
-                    onDismissed: (direction) {
-                      downloadData.delete(downloadData.downloads[index].id);
+                    onDismissed: (direction) async{
+                     await downloadData.delete(downloadData.downloads[index].id,);
+
                     },
-                    child: ArchivedWidget(
-                      // id: downloadData.downloads[index].id,
-                      // author: downloadData.downloads[index].author,
-                      // name: downloadData.downloads[index].name,
-                      // imageUrl: downloadData.downloads[index].imageUrl,
+                    child: DownloadWidget(
+                      id: downloadData.downloads[index].id,
+                      author: downloadData.downloads[index].author,
+                      name: downloadData.downloads[index].name,
+                      imageUrl: downloadData.downloads[index].imageUrl,
+                      downloadDate: downloadData.downloads[index].downloadDate,
                     ),
                   );
                 },

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 //third party
 import 'package:provider/provider.dart';
-import 'package:vidzone/helpers/payment_pop_up.dart';
+import 'package:vidzone/helpers/app_bar_helper.dart';
 
 //models
 import '../../models/collection_model.dart';
@@ -96,7 +96,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                 child: Consumer<CollectionProvider>(
                     builder: (context, colProd2, child) {
                       return ListView.separated(
-                        separatorBuilder: (context , index) => SizedBox(height: 10,),
+                        separatorBuilder: (context , index) => SizedBox(height: 4,),
                         itemBuilder: (context, index) {
                           print(mediaProviders.length);
                           return Dismissible(

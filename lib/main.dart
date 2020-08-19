@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 //third party
 import 'package:provider/provider.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:vidzone/screens/fifth_level_screen/account_screen.dart';
+import 'package:vidzone/screens/fouth_level_screen/account_screen.dart';
 
 //providers
 import './providers/auth_provider.dart';
@@ -80,14 +80,13 @@ class Vidzone extends StatelessWidget {
         ),
         ChangeNotifierProxyProvider<AuthProvider, UserProvider>(
           create: (ctx) {
-            print("User provider create");
+           
             return UserProvider(
               '',
             );
           },
           update: (ctx, authData, userData) {
-            print("User provider updated");
-            print('${authData.id} fuck');
+           
             return userData
               ..update(
                 authData.id,
@@ -110,14 +109,13 @@ class Vidzone extends StatelessWidget {
         ),
         ChangeNotifierProxyProvider<AuthProvider, PaymentProvider>(
           create: (ctx) {
-            print("PaymentProvider provider create");
+          
             return PaymentProvider(
               '',
             );
           },
           update: (ctx, authData, paymentData) {
-            print("paymentData provider updated");
-            print('${authData.id} fuck');
+          
             return paymentData
               ..update(
                 authData.id,
@@ -127,7 +125,7 @@ class Vidzone extends StatelessWidget {
       ],
       child: Consumer<AuthProvider>(
         builder: (ctx, auth, child) {
-          print(auth.isLoggedIn);
+        
           return MaterialApp(
             title: 'Vidzone',
             theme: ThemeData.light().copyWith(

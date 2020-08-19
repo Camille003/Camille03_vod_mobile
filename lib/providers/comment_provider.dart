@@ -26,9 +26,9 @@ class CommentsProvider with ChangeNotifier {
             comment.toFireBaseDocument(),
           );
       if (response.documentID.isNotEmpty) {
-        print("No error");
+      
       } else {
-        print("Error from here");
+       
         throw "Error";
       }
     } catch (e) {
@@ -64,8 +64,7 @@ class CommentsProvider with ChangeNotifier {
 
       notifyListeners();
     } catch (e) {
-      print("Error from get data");
-      print(e.toString());
+    
       throw e;
     }
   }
