@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:animated_list_view_scroll/animated_list_view_scroll.dart';
 
-
 //helpers
 import '../../helpers/error_pop_up_helper.dart';
 
@@ -37,31 +36,6 @@ class MoviesScreen extends StatelessWidget {
       body: ConnectivityWidget(
         showOfflineBanner: true,
         offlineCallback: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (context) => Container(
-              child: Column(
-                children: [
-                  Text(
-                    'Sorry it seems you are currently offline,',
-                  ),
-                  Text(
-                    'Please visit your downloads',
-                  ),
-                  SizedBox(
-                    height: 50,
-                    width: 200,
-                    child: RaisedButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Donwloads',
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
           _scaffoldKey.currentState.showSnackBar(
             SnackBar(
               content: Text(

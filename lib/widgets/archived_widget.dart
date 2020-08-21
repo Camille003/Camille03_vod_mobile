@@ -3,6 +3,10 @@ import 'package:intl/intl.dart';
 
 //third
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
+//widgets
+import './waiting_widget.dart';
 
 //provider
 import '../providers/media_provider.dart';
@@ -34,17 +38,26 @@ class ArchivedWidget extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
+            Flexible(
               flex: 2,
               child: Container(
                 height: 100,
-                child: Image.network(
-                  mediaProvider.imageUrl,
-                  fit: BoxFit.cover,
+                child: Center(
+                  child: CachedNetworkImage(
+                    imageUrl: mediaProvider.imageUrl,
+                    placeholder: (context, url) => WaitingWidget(),
+                    errorWidget: (context, url, error) => Icon(
+                      Icons.error,
+                    ),
+                  ),
+                  // child: Image.network(
+                  //   mediaProvider.imageUrl,
+                  //   fit: BoxFit.cover,
+                  // ),
                 ),
               ),
             ),
-            Expanded(
+            Flexible(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(

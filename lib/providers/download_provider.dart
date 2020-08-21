@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 
 //third party
 import 'package:sembast/sembast.dart';
@@ -49,10 +49,9 @@ class DownloadProvider with ChangeNotifier {
       );
 
       if (value != null) {
-        print("has been downloaded");
         return true;
       }
-      print("has not been downloaded");
+
       return false;
     } catch (e) {
       print(e);
@@ -60,7 +59,7 @@ class DownloadProvider with ChangeNotifier {
     }
   }
 
-  Future<void> delete(String id , String path) async {
+  Future<void> delete(String id, String path) async {
     try {
       final finder = Finder(
         filter: Filter.equals(
@@ -72,6 +71,9 @@ class DownloadProvider with ChangeNotifier {
         await _db,
         finder: finder,
       );
+      await File(
+        path,
+      ).delete();
       _downLoads.removeWhere((download) => download.id == id);
       notifyListeners();
     } catch (e) {
@@ -92,13 +94,8 @@ class DownloadProvider with ChangeNotifier {
           var download = DownloadModel.fromSembast(
             element.value,
           );
-          print(
-            "Not found Found file",
-          );
+
           if (File(download.downloadPath).existsSync()) {
-            print(
-              "Found file",
-            );
             downloads.add(download);
           }
         });
