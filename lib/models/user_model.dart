@@ -1,4 +1,4 @@
-import 'dart:convert';
+
 
 import 'package:flutter/material.dart';
 
@@ -128,9 +128,5 @@ class UserModel {
   }
 
   //for debugging puposes
-  @override
-  String toString() {
-    // TODO: implement toString
-    return jsonEncode(toFireBaseDocument());
-  }
+
 }

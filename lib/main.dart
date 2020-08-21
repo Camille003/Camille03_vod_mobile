@@ -19,7 +19,7 @@ import './providers/news_provider.dart';
 //screens
 import './screens/landing_screen.dart';
 import './screens/login_screen.dart';
-import 'screens/sign_up.dart';
+import './screens/sign_up.dart';
 import './screens/welcome_screen.dart';
 import './screens/home_screen.dart';
 import './screens/splash_screen.dart';

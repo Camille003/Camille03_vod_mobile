@@ -1,5 +1,4 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
@@ -41,10 +40,5 @@ class DownloadModel {
     };
   }
 
-  @override
-  String toString() {
-    print(
-      jsonEncode({}),
-    );
-  }
+ 
 }

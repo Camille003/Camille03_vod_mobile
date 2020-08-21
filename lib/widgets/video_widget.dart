@@ -1,10 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 //third party
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:provider/provider.dart';
-import 'package:vidzone/widgets/waiting_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 //model
 import '../providers/media_provider.dart';
@@ -12,27 +11,45 @@ import '../providers/media_provider.dart';
 //screen
 import './../screens/third_level_screen/video_screen.dart';
 
+//widgets
+import '../widgets/waiting_widget.dart';
+
 class VideoTileWidget extends StatelessWidget {
+  final bool isOnline;
+
+  const VideoTileWidget(
+    this.isOnline,
+  );
   @override
   Widget build(BuildContext context) {
-    // final platform = Theme.of(context).platform;
     final mediaProvider = Provider.of<MediaProvider>(
       context,
       listen: false,
     );
     print(mediaProvider.imageUrl);
     return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            fullscreenDialog: false,
-            builder: (ctx) => ChangeNotifierProvider.value(
-              value: mediaProvider,
-              child: VideoScreen(),
-            ),
-          ),
-        );
-      },
+      onTap: isOnline
+          ? () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  fullscreenDialog: false,
+                  builder: (ctx) => ChangeNotifierProvider.value(
+                    value: mediaProvider,
+                    child: VideoScreen(),
+                  ),
+                ),
+              );
+            }
+          : () {
+              Scaffold.of(context).hideCurrentSnackBar();
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Offline',
+                  ),
+                ),
+              );
+            },
       child: Container(
         height: 300,
         child: Card(
@@ -46,18 +63,14 @@ class VideoTileWidget extends StatelessWidget {
               Flexible(
                 fit: FlexFit.loose,
                 flex: 2,
-                // child: Center(
-                //   child: CachedNetworkImage(
-                //     imageUrl: mediaProvider.imageUrl,
-                //     placeholder: (context, url) => WaitingWidget(),
-                //     errorWidget: (context, url, error) => Icon(Icons.error),
-                //   ),
-                // ),
-                child: Image.network(
-                  mediaProvider.imageUrl,
-                  fit: BoxFit.cover,
-                  key: UniqueKey(),
-                  //loadingBuilder: (context, widget, chunck) => WaitingWidget(),
+                child: Center(
+                  child: CachedNetworkImage(
+                    imageUrl: mediaProvider.imageUrl,
+                    placeholder: (context, url) => WaitingWidget(),
+                    errorWidget: (context, url, error) => Icon(
+                      Icons.error,
+                    ),
+                  ),
                 ),
               ),
               Container(
@@ -75,7 +88,7 @@ class VideoTileWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      mediaProvider.name,
+                      '${mediaProvider.name[0].toUpperCase()}${mediaProvider.name.substring(1)}',
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                     Row(

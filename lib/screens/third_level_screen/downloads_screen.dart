@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 //third party
 import 'package:provider/provider.dart';
-import 'package:vidzone/helpers/app_bar_helper.dart';
-import 'package:vidzone/screens/fouth_level_screen/downloads_video_screen.dart';
+
+//helpers
+import '../../helpers/app_bar_helper.dart';
+
 
 //providers
 import '../../providers/download_provider.dart';
@@ -13,6 +15,9 @@ import '../../widgets/download_widget.dart';
 import '../../widgets/error_widget.dart';
 import '../../widgets/no_content_widget.dart';
 import '../../widgets/waiting_widget.dart';
+
+//screens
+import '../fouth_level_screen/downloads_video_screen.dart';
 
 class DownloadScreen extends StatelessWidget {
   static const routeName = "downloadScreen";

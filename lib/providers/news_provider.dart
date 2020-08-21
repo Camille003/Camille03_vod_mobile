@@ -48,7 +48,7 @@ class NewsProvider with ChangeNotifier {
   }
 
   //for testing purposes
-  List<int> _finalArray = [];
+  // List<int> _finalArray = [];
 
   Future<void> fetchAndSetNewsItem() async {
     // final maximum = 9;

@@ -65,8 +65,9 @@ class _AccountScreenState extends State<AccountScreen> {
                         height: 100,
                         width: 100,
                         child: CircleAvatar(
-                          backgroundImage:
-                              NetworkImage(_provider.user.imageUrl),
+                          backgroundImage: NetworkImage(
+                            _provider.user.imageUrl,
+                          ),
                         ),
                       ),
                     ),

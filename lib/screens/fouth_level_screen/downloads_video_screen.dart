@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 
 //third party
 import 'package:provider/provider.dart';
-import 'package:flick_video_player/flick_video_player.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:video_player/video_player.dart';
+
 import 'package:vidzone/utils/flick_multi_player.dart';
 
 import 'package:visibility_detector/visibility_detector.dart';
