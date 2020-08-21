@@ -52,7 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
         .fetchAndSetUser()
         .then((value) => setState(() {
               isLoading = false;
-              
             }));
   }
 
@@ -118,13 +117,13 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
         ),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.search,
-              color: Colors.black54,
-            ),
-            onPressed: null,
-          ),
+          // IconButton(
+          //   icon: Icon(
+          //     Icons.search,
+          //     color: Colors.black54,
+          //   ),
+          //   onPressed: null,
+          // ),
           IconButton(
             icon: Icon(
               Icons.notifications,
@@ -135,10 +134,8 @@ class _HomeScreenState extends State<HomeScreen> {
           if (!isLoading)
             Consumer<UserProvider>(
               builder: (context, userProd, child) {
-               
                 return IconButton(
                   icon: CircleAvatar(
-                    
                     backgroundImage: NetworkImage(
                       userProd.user.imageUrl,
                     ),
@@ -151,7 +148,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 );
               },
-             
             ),
         ],
       ),

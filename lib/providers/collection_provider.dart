@@ -1,3 +1,4 @@
+//flutter
 import 'package:flutter/foundation.dart';
 
 //third party
@@ -6,12 +7,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/collection_model.dart';
 
 class CollectionProvider with ChangeNotifier {
-  String _userId;
-  final _firestore = Firestore.instance.collection("collection");
-  final _identifier = "collection";
   CollectionProvider(this._userId);
 
   List<CollectionModel> _collectionItems = [];
+  final _firestore = Firestore.instance.collection("collection");
+  
+
+  final _identifier = "collection";
+
+  String _userId;
 
   List<CollectionModel> get collectionItems {
     return [..._collectionItems].reversed.toList();

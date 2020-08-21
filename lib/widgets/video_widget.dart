@@ -20,6 +20,7 @@ class VideoTileWidget extends StatelessWidget {
       context,
       listen: false,
     );
+    print(mediaProvider.imageUrl);
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
@@ -45,18 +46,19 @@ class VideoTileWidget extends StatelessWidget {
               Flexible(
                 fit: FlexFit.loose,
                 flex: 2,
-                child: Center(
-                  child: CachedNetworkImage(
-                    imageUrl: mediaProvider.imageUrl,
-                    placeholder: (context, url) => WaitingWidget(),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  ),
-                ),
-                // child: Image.network(
-                //   mediaProvider.imageUrl,
-                //   fit: BoxFit.fill,
-                //   //loadingBuilder: (context, widget, chunck) => WaitingWidget(),
+                // child: Center(
+                //   child: CachedNetworkImage(
+                //     imageUrl: mediaProvider.imageUrl,
+                //     placeholder: (context, url) => WaitingWidget(),
+                //     errorWidget: (context, url, error) => Icon(Icons.error),
+                //   ),
                 // ),
+                child: Image.network(
+                  mediaProvider.imageUrl,
+                  fit: BoxFit.cover,
+                  key: UniqueKey(),
+                  //loadingBuilder: (context, widget, chunck) => WaitingWidget(),
+                ),
               ),
               Container(
                 padding: EdgeInsets.only(

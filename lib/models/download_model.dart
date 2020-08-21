@@ -25,7 +25,9 @@ class DownloadModel {
         name = snapshot['name'],
         imageUrl = snapshot['imageUrl'],
         author = snapshot['author'],
-        downloadDate = snapshot['downloadDate'],
+        downloadDate = DateTime.tryParse(
+          snapshot['downloadDate'],
+        ),
         downloadPath = snapshot['downloadPath'];
 
   Map<String, String> toMap() {
@@ -35,7 +37,7 @@ class DownloadModel {
       'imageUrl': imageUrl,
       'author': author,
       'downloadPath': downloadPath,
-      'downloaDate' : downloadDate.toIso8601String() ,
+      'downloadDate': downloadDate.toIso8601String(),
     };
   }
 

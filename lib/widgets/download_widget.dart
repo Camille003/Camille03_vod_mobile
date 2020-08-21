@@ -54,7 +54,7 @@ class DownloadWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '$name[0].toUpperCase() +name.substring(1)}',
+                      '${name[0].toUpperCase() +name.substring(1)}',
                       softWrap: true,
                       style: theme.textTheme.bodyText1,
                     ),

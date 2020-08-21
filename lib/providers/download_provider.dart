@@ -60,7 +60,7 @@ class DownloadProvider with ChangeNotifier {
     }
   }
 
-  Future<void> delete(String id) async {
+  Future<void> delete(String id , String path) async {
     try {
       final finder = Finder(
         filter: Filter.equals(
@@ -92,9 +92,13 @@ class DownloadProvider with ChangeNotifier {
           var download = DownloadModel.fromSembast(
             element.value,
           );
-
+          print(
+            "Not found Found file",
+          );
           if (File(download.downloadPath).existsSync()) {
-            print(download);
+            print(
+              "Found file",
+            );
             downloads.add(download);
           }
         });

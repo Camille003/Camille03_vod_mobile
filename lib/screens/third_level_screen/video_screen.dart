@@ -19,7 +19,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:expandable/expandable.dart';
-import 'package:sticky_and_expandable_list/sticky_and_expandable_list.dart';
 
 //constants
 import '../../constants/styles.dart';
@@ -38,8 +37,7 @@ import '../../providers/download_provider.dart';
 import '../../widgets/comment_widget.dart';
 import '../../widgets/waiting_widget.dart';
 
-//screens
-import '../../screens/home_screen.dart';
+
 
 const debug = true;
 
@@ -151,7 +149,9 @@ class _VideoScreenState extends State<VideoScreen> {
               _config['numberOfLikes'] = _mediaData.numberOfLikes;
               flickManager = FlickManager(
                 videoPlayerController: VideoPlayerController.network(
-                    'https://res.cloudinary.com/dohp2afc4/video/upload/v1589451729/John_Wick_Official_Trailer__1__2014__-_Keanu_Reeves__Willem_Dafoe_Movie_HD_480p_lkzpys.mp4'),
+                  _mediaData.streamingUrl,
+                ),
+              
               );
             }),
           );
@@ -234,7 +234,6 @@ class _VideoScreenState extends State<VideoScreen> {
                           },
                           child: Container(
                             child: FlickVideoPlayer(
-                              
                               flickManager: flickManager,
                               flickVideoWithControls: FlickVideoWithControls(
                                 controls: FlickPortraitControls(),
@@ -415,8 +414,7 @@ class _VideoScreenState extends State<VideoScreen> {
                                             await FlutterDownloader.enqueue(
                                               fileName:
                                                   _mediaData.name + ".mp4",
-                                              url:
-                                                  'https://res.cloudinary.com/dohp2afc4/video/upload/v1589451729/John_Wick_Official_Trailer__1__2014__-_Keanu_Reeves__Willem_Dafoe_Movie_HD_480p_lkzpys.mp4',
+                                              url: _mediaData.streamingUrl,
                                               savedDir: _localPath,
                                               showNotification: true,
                                               openFileFromNotification: true,
@@ -426,9 +424,10 @@ class _VideoScreenState extends State<VideoScreen> {
 
                                             await downloadData
                                                 .download(DownloadModel(
+                                              downloadDate: DateTime.now(),
                                               id: _mediaData.id,
                                               name: _mediaData.name,
-                                              imageUrl: '',
+                                              imageUrl: _mediaData.imageUrl,
                                               author: _mediaData.author,
                                               downloadPath: savedDir.path +
                                                   "/" +

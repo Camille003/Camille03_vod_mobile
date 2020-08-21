@@ -9,13 +9,19 @@ import 'media_provider.dart';
 //provider
 import './media_provider.dart';
 
-class MovieProvider  with ChangeNotifier {
+class MovieProvider with ChangeNotifier {
   final _fireStore = Firestore.instance;
   final _identifier = "media";
 
   List<MediaProvider> _movies = [];
   List<MediaProvider> get movies {
     return [..._movies];
+  }
+
+  int _currentNumber = 0;
+
+  int get currentNumber {
+    return _currentNumber;
   }
 
   Future<void> fetchAndSetMovies({String category = "All"}) async {
@@ -37,8 +43,7 @@ class MovieProvider  with ChangeNotifier {
 
       _movies = [...movies1];
       notifyListeners();
-    } catch (e,s) {
-      
+    } catch (e, s) {
       throw e;
     }
   }

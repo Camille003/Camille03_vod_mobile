@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 //third party
 import 'package:provider/provider.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:vidzone/screens/fouth_level_screen/account_screen.dart';
 
 //providers
 import './providers/auth_provider.dart';
@@ -16,6 +15,7 @@ import './providers/comment_provider.dart';
 import './providers/download_provider.dart';
 import './providers/trailer_provider.dart';
 import './providers/payment_provider.dart';
+import './providers/news_provider.dart';
 //screens
 import './screens/landing_screen.dart';
 import './screens/login_screen.dart';
@@ -32,13 +32,15 @@ import './screens/fouth_level_screen/request_screen.dart';
 import './screens/fouth_level_screen/privacy_screen.dart';
 import './screens/fouth_level_screen/policy_screen.dart';
 import './screens/fouth_level_screen/payments_screen.dart';
-import './screens/fouth_level_screen/downloads_video_screen.dart';
+import './screens/fouth_level_screen/account_screen.dart';
 
 const debug = true;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterDownloader.initialize(debug: debug);
-  runApp(Vidzone());
+  runApp(
+    Vidzone(),
+  );
 }
 
 class Vidzone extends StatelessWidget {
@@ -76,17 +78,19 @@ class Vidzone extends StatelessWidget {
           create: (ctx) {
             return DownloadProvider();
           },
-          lazy: false,
+        ),
+        ChangeNotifierProvider<NewsProvider>(
+          create: (ctx) {
+            return NewsProvider();
+          },
         ),
         ChangeNotifierProxyProvider<AuthProvider, UserProvider>(
           create: (ctx) {
-           
             return UserProvider(
               '',
             );
           },
           update: (ctx, authData, userData) {
-           
             return userData
               ..update(
                 authData.id,
@@ -109,13 +113,11 @@ class Vidzone extends StatelessWidget {
         ),
         ChangeNotifierProxyProvider<AuthProvider, PaymentProvider>(
           create: (ctx) {
-          
             return PaymentProvider(
               '',
             );
           },
           update: (ctx, authData, paymentData) {
-          
             return paymentData
               ..update(
                 authData.id,
@@ -125,7 +127,6 @@ class Vidzone extends StatelessWidget {
       ],
       child: Consumer<AuthProvider>(
         builder: (ctx, auth, child) {
-        
           return MaterialApp(
             title: 'Vidzone',
             theme: ThemeData.light().copyWith(
@@ -162,8 +163,8 @@ class Vidzone extends StatelessWidget {
             ),
             home: auth.isLoggedIn == true
                 ? HomeScreen()
-                : FutureBuilder(
-                    future: Future.delayed(Duration(seconds: 3), () {
+                : FutureBuilder<String>(
+                    future: Future.delayed(Duration(seconds: 5), () {
                       return auth.autoLogin();
                     }),
                     builder: (ctx, snapShot) =>
@@ -186,7 +187,6 @@ class Vidzone extends StatelessWidget {
               DownloadScreen.routeName: (ctx) => DownloadScreen(),
               SettingScreen.routeName: (ctx) => SettingScreen(),
               AccountScreen.routeName: (ctx) => AccountScreen(),
-              DownloadVideoScreen.routeName: (ctx) => DownloadVideoScreen(),
               PaymentScreen.routeName: (ctx) => PaymentScreen(),
               PolicyScreen.routeName: (ctx) => PolicyScreen(),
               PrivacyScreen.routeName: (ctx) => PrivacyScreen(),

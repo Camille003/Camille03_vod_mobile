@@ -1,16 +1,83 @@
+//flutter
 import 'package:flutter/material.dart';
+
+//third party
+import 'package:provider/provider.dart';
+import 'package:flick_video_player/flick_video_player.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:video_player/video_player.dart';
+import 'package:vidzone/utils/flick_multi_player.dart';
+
+import 'package:visibility_detector/visibility_detector.dart';
+
+//models
+
+import '../../models/download_model.dart';
+
+//providers
+
+import '../../providers/download_provider.dart';
+import '../../providers/user_provider.dart';
+
+//utils
+import '../../utils/flick_multi_manager.dart';
 
 class DownloadVideoScreen extends StatefulWidget {
   static const routeName = "downloadvideoScreen";
+  final List<DownloadModel> downloads;
+  DownloadVideoScreen(this.downloads);
   @override
   _DownloadVideoScreenState createState() => _DownloadVideoScreenState();
 }
 
 class _DownloadVideoScreenState extends State<DownloadVideoScreen> {
+  //for playing the media
+  FlickMultiManager flickMultiManager;
+  List<DownloadModel> items;
+
+  @override
+  void initState() {
+    //multi manager
+    flickMultiManager = FlickMultiManager();
+    items = widget.downloads;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    final theme = Theme.of(context);
+    final textTheme = Theme.of(context).textTheme;
+
+    return VisibilityDetector(
+      key: ObjectKey(flickMultiManager),
+      onVisibilityChanged: (visibility) {
+        if (visibility.visibleFraction == 0 && this.mounted) {
+          flickMultiManager.pause();
+        }
+      },
+      child: Container(
+        child: ListView.separated(
+          separatorBuilder: (context, int) => Container(
+            height: 50,
+          ),
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            return Container(
+              height: 300,
+              margin: EdgeInsets.all(2),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: FlickMultiPlayer(
+                  url: items[index].downloadPath,
+                  flickMultiManager: flickMultiManager,
+                  image: items[index].imageUrl,
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 }
 
