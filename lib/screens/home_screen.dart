@@ -52,6 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .fetchAndSetUser()
         .then((value) => setState(() {
               isLoading = false;
+           
             }));
   }
 

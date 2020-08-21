@@ -19,6 +19,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:expandable/expandable.dart';
+import 'package:connectivity_widget/connectivity_widget.dart';
 
 //constants
 import '../../constants/styles.dart';
@@ -37,8 +38,6 @@ import '../../providers/download_provider.dart';
 import '../../widgets/comment_widget.dart';
 import '../../widgets/waiting_widget.dart';
 
-
-
 const debug = true;
 
 class VideoScreen extends StatefulWidget with WidgetsBindingObserver {
@@ -54,6 +53,8 @@ class VideoScreen extends StatefulWidget with WidgetsBindingObserver {
 }
 
 class _VideoScreenState extends State<VideoScreen> {
+  //connectivity
+  var _isOnline = true;
 //for downloads
   ReceivePort _port = ReceivePort();
   String _localPath;
@@ -151,7 +152,6 @@ class _VideoScreenState extends State<VideoScreen> {
                 videoPlayerController: VideoPlayerController.network(
                   _mediaData.streamingUrl,
                 ),
-              
               );
             }),
           );
@@ -185,7 +185,6 @@ class _VideoScreenState extends State<VideoScreen> {
 
   @override
   void dispose() {
-   
     flickManager.dispose();
     _commentController.dispose();
     IsolateNameServer.removePortNameMapping('downloader_send_port');
@@ -282,229 +281,284 @@ class _VideoScreenState extends State<VideoScreen> {
                 ),
 
                 //likes download save
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  width: double.infinity,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Spacer(),
+                ConnectivityWidget(
+                  onlineCallback: () {
+                    setState(() {
+                      _isOnline = true;
+                    });
+                  },
+                  offlineCallback: () {
+                    setState(() {
+                      _isOnline = false;
+                    });
+                  },
+                  builder: (context, isOnline) => Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Spacer(),
 
-                      Consumer<MediaProvider>(
-                        builder: (ctx, mediaModel, child) {
-                          return FutureBuilder(
-                            future: mediaModel.hasBeenLiked(userId),
-                            builder: (ctx, snapshot) => snapshot
-                                        .connectionState ==
-                                    ConnectionState.none
-                                ? WaitingWidget()
-                                : snapshot.data == true
-                                    ? Badge(
-                                        badgeContent:
-                                            Text('${mediaModel.numberOfLikes}'),
-                                        child: Icon(
-                                          Icons.thumb_up,
-                                        ),
-                                        badgeColor: theme.accentColor,
-                                      )
-                                    : Badge(
-                                        badgeContent:
-                                            Text('${mediaModel.numberOfLikes}'),
-                                        child: IconButton(
-                                          icon: Icon(
-                                            Icons.thumb_up,
-                                          ),
-                                          onPressed: () async {
-                                            await mediaModel.likeVideo(
-                                              userId,
-                                            );
-
-                                            _scaffoldKey.currentState
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  'Liked',
-                                                  style: TextStyle(
-                                                    color: theme.accentColor,
-                                                  ),
+                        isOnline
+                            ? Consumer<MediaProvider>(
+                                builder: (ctx, mediaModel, child) {
+                                  return FutureBuilder(
+                                    future: mediaModel.hasBeenLiked(userId),
+                                    builder: (ctx, snapshot) => snapshot
+                                                .connectionState ==
+                                            ConnectionState.none
+                                        ? WaitingWidget()
+                                        : snapshot.data == true
+                                            ? Badge(
+                                                badgeContent: Text(
+                                                    '${mediaModel.numberOfLikes}'),
+                                                child: Icon(
+                                                  Icons.thumb_up,
                                                 ),
-                                                backgroundColor: Colors.black,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                          );
-                        },
-                      ),
-                      SizedBox(
-                        width: 15,
-                      ),
-
-                      //download
-                      Consumer<DownloadProvider>(
-                        builder: (ctx, downloadData, child) {
-                          return FutureBuilder(
-                            future: downloadData.hasBeenDownloaded(
-                              _mediaData.id,
-                            ),
-                            builder: (ctx, snapshot) => snapshot
-                                        .connectionState ==
-                                    ConnectionState.none
-                                ? WaitingWidget()
-                                : snapshot.data == true
-                                    ? Badge(
-                                        child: Icon(
-                                          Icons.file_download,
-                                        ),
-                                        badgeColor: theme.accentColor,
-                                      )
-                                    : Badge(
-                                        showBadge: false,
-                                        child: IconButton(
-                                          icon: Icon(
-                                            Icons.file_download,
-                                          ),
-                                          onPressed: () async {
-                                            print("Downloading");
-
-                                            PermissionStatus permission;
-                                            //1 check if we have permisions
-                                            final isGranted = await Permission
-                                                .storage.isGranted;
-
-                                            //2 if we do not , request
-                                            if (!isGranted) {
-                                              permission = await Permission
-                                                  .storage
-                                                  .request();
-                                            }
-
-                                            //3 if not given terminate
-                                            if (permission.isDenied) {
-                                              return;
-                                            }
-                                            //5 if we do download
-                                            _scaffoldKey.currentState
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  'Downloading',
-                                                  style: TextStyle(
-                                                    color: theme.accentColor,
+                                                badgeColor: theme.accentColor,
+                                              )
+                                            : Badge(
+                                                badgeContent: Text(
+                                                    '${mediaModel.numberOfLikes}'),
+                                                child: IconButton(
+                                                  icon: Icon(
+                                                    Icons.thumb_up,
                                                   ),
+                                                  onPressed: () async {
+                                                    await mediaModel.likeVideo(
+                                                      userId,
+                                                    );
+
+                                                    _scaffoldKey.currentState
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                        content: Text(
+                                                          'Liked',
+                                                          style: TextStyle(
+                                                            color: theme
+                                                                .accentColor,
+                                                          ),
+                                                        ),
+                                                        backgroundColor:
+                                                            Colors.black,
+                                                      ),
+                                                    );
+                                                  },
                                                 ),
-                                                backgroundColor: Colors.black,
                                               ),
-                                            );
-                                            print("Local path");
-                                            _localPath =
-                                                (await _findLocalPath()) +
-                                                    Platform.pathSeparator +
-                                                    'Download';
+                                  );
+                                },
+                              )
+                            : Badge(
+                                badgeContent:
+                                    Text('${_mediaData.numberOfLikes}'),
+                                child: Icon(
+                                  Icons.thumb_up,
+                                ),
+                                badgeColor: Colors.grey,
+                              ),
+                        SizedBox(
+                          width: 15,
+                        ),
 
-                                            final savedDir =
-                                                Directory(_localPath);
-                                            bool hasExisted =
-                                                await savedDir.exists();
-                                            if (!hasExisted) {
-                                              savedDir.create();
-                                            }
-
-                                            await FlutterDownloader.enqueue(
-                                              fileName:
-                                                  _mediaData.name + ".mp4",
-                                              url: _mediaData.streamingUrl,
-                                              savedDir: _localPath,
-                                              showNotification: true,
-                                              openFileFromNotification: true,
-                                            );
-
-                                            // 6 add to document database
-
-                                            await downloadData
-                                                .download(DownloadModel(
-                                              downloadDate: DateTime.now(),
-                                              id: _mediaData.id,
-                                              name: _mediaData.name,
-                                              imageUrl: _mediaData.imageUrl,
-                                              author: _mediaData.author,
-                                              downloadPath: savedDir.path +
-                                                  "/" +
-                                                  _mediaData.name +
-                                                  ".mp4",
-                                            ));
-                                            _scaffoldKey.currentState
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  'Download Complete',
-                                                  style: TextStyle(
-                                                    color: theme.accentColor,
+                        //download
+                        isOnline
+                            ? Consumer<DownloadProvider>(
+                                builder: (ctx, downloadData, child) {
+                                  return FutureBuilder(
+                                    future: downloadData.hasBeenDownloaded(
+                                      _mediaData.id,
+                                    ),
+                                    builder: (ctx, snapshot) => snapshot
+                                                .connectionState ==
+                                            ConnectionState.none
+                                        ? WaitingWidget()
+                                        : snapshot.data == true
+                                            ? Badge(
+                                                child: Icon(
+                                                  Icons.file_download,
+                                                ),
+                                                badgeColor: theme.accentColor,
+                                              )
+                                            : Badge(
+                                                showBadge: false,
+                                                child: IconButton(
+                                                  icon: Icon(
+                                                    Icons.file_download,
                                                   ),
+                                                  onPressed: () async {
+                                                    print("Downloading");
+
+                                                    PermissionStatus permission;
+                                                    //1 check if we have permisions
+                                                    final isGranted =
+                                                        await Permission
+                                                            .storage.isGranted;
+
+                                                    //2 if we do not , request
+                                                    if (!isGranted) {
+                                                      permission =
+                                                          await Permission
+                                                              .storage
+                                                              .request();
+                                                    }
+
+                                                    //3 if not given terminate
+                                                    if (permission.isDenied) {
+                                                      return;
+                                                    }
+                                                    //5 if we do download
+                                                    _scaffoldKey.currentState
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                        content: Text(
+                                                          'Downloading',
+                                                          style: TextStyle(
+                                                            color: theme
+                                                                .accentColor,
+                                                          ),
+                                                        ),
+                                                        backgroundColor:
+                                                            Colors.black,
+                                                      ),
+                                                    );
+                                                    print("Local path");
+                                                    _localPath =
+                                                        (await _findLocalPath()) +
+                                                            Platform
+                                                                .pathSeparator +
+                                                            'Download';
+
+                                                    final savedDir =
+                                                        Directory(_localPath);
+                                                    bool hasExisted =
+                                                        await savedDir.exists();
+                                                    if (!hasExisted) {
+                                                      savedDir.create();
+                                                    }
+
+                                                    await FlutterDownloader
+                                                        .enqueue(
+                                                      fileName:
+                                                          _mediaData.name +
+                                                              ".mp4",
+                                                      url: _mediaData
+                                                          .streamingUrl,
+                                                      savedDir: _localPath,
+                                                      showNotification: true,
+                                                      openFileFromNotification:
+                                                          true,
+                                                    );
+
+                                                    // 6 add to document database
+
+                                                    await downloadData
+                                                        .download(DownloadModel(
+                                                      downloadDate:
+                                                          DateTime.now(),
+                                                      id: _mediaData.id,
+                                                      name: _mediaData.name,
+                                                      imageUrl:
+                                                          _mediaData.imageUrl,
+                                                      author: _mediaData.author,
+                                                      downloadPath:
+                                                          savedDir.path +
+                                                              "/" +
+                                                              _mediaData.name +
+                                                              ".mp4",
+                                                    ));
+                                                    _scaffoldKey.currentState
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                        content: Text(
+                                                          'Download Complete',
+                                                          style: TextStyle(
+                                                            color: theme
+                                                                .accentColor,
+                                                          ),
+                                                        ),
+                                                        backgroundColor:
+                                                            Colors.black,
+                                                      ),
+                                                    );
+                                                  },
                                                 ),
-                                                backgroundColor: Colors.black,
                                               ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                          );
-                        },
-                      ),
-                      //
+                                  );
+                                },
+                              )
+                            : Badge(
+                                child: Icon(
+                                  Icons.file_download,
+                                ),
+                                badgeColor: Colors.grey,
+                              ),
+                        //
 
-                      SizedBox(
-                        width: 15,
-                      ),
+                        SizedBox(
+                          width: 15,
+                        ),
 
-                      //       //add to collection
-                      Consumer<MediaProvider>(
-                        builder: (ctx, mediaModel, child) {
-                          return FutureBuilder<bool>(
-                            future: mediaModel.hasBeenSaved(userId),
-                            builder: (ctx, snapshot) => snapshot
-                                        .connectionState ==
-                                    ConnectionState.none
-                                ? WaitingWidget()
-                                : snapshot.data == true
-                                    ? Badge(
-                                        showBadge: false,
-                                        child: Icon(
-                                          Icons.library_add,
-                                        ),
-                                        badgeColor: theme.accentColor,
-                                      )
-                                    : Badge(
-                                        showBadge: false,
-                                        child: IconButton(
-                                          icon: Icon(
-                                            Icons.library_add,
-                                          ),
-                                          onPressed: () async {
-                                            await mediaModel.addToWatchLater(
-                                              userId,
-                                            );
-
-                                            _scaffoldKey.currentState
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  'Saved',
-                                                  style: TextStyle(
-                                                    color: theme.accentColor,
+                        //       //add to collection
+                        isOnline
+                            ? Consumer<MediaProvider>(
+                                builder: (ctx, mediaModel, child) {
+                                  return FutureBuilder<bool>(
+                                    future: mediaModel.hasBeenSaved(userId),
+                                    builder: (ctx, snapshot) => snapshot
+                                                .connectionState ==
+                                            ConnectionState.none
+                                        ? WaitingWidget()
+                                        : snapshot.data == true
+                                            ? Badge(
+                                                showBadge: false,
+                                                child: Icon(
+                                                  Icons.library_add,
+                                                ),
+                                                badgeColor: theme.accentColor,
+                                              )
+                                            : Badge(
+                                                showBadge: false,
+                                                child: IconButton(
+                                                  icon: Icon(
+                                                    Icons.library_add,
                                                   ),
+                                                  onPressed: () async {
+                                                    await mediaModel
+                                                        .addToWatchLater(
+                                                      userId,
+                                                    );
+
+                                                    _scaffoldKey.currentState
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                        content: Text(
+                                                          'Saved',
+                                                          style: TextStyle(
+                                                            color: theme
+                                                                .accentColor,
+                                                          ),
+                                                        ),
+                                                        backgroundColor:
+                                                            Colors.black,
+                                                      ),
+                                                    );
+                                                  },
                                                 ),
-                                                backgroundColor: Colors.black,
                                               ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                          );
-                        },
-                      ),
-                    ],
+                                  );
+                                },
+                              )
+                            : Badge(
+                                showBadge: false,
+                                child: Icon(
+                                  Icons.library_add,
+                                ),
+                                badgeColor: theme.accentColor,
+                              ),
+                      ],
+                    ),
                   ),
                 ),
 
@@ -587,86 +641,88 @@ class _VideoScreenState extends State<VideoScreen> {
       floatingActionButton: FloatingActionButton(
         foregroundColor: theme.accentColor,
         backgroundColor: theme.primaryColor,
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (context) {
-              return SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.all(20.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20.0),
-                      topRight: Radius.circular(20.0),
-                    ),
-                  ),
-                  margin: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          maxLines: 4,
-                          minLines: 2,
-                          keyboardType: TextInputType.multiline,
-                          controller: _commentController,
-                          // textInputAction: TextInputAction.done,
-                          decoration: basicInputStyle.copyWith(
-                            labelText: 'Add a comment',
-                            labelStyle: textTheme.bodyText2,
-                            border: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: theme.accentColor,
-                              ),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: theme.accentColor,
-                              ),
-                            ),
+        onPressed: !_isOnline
+            ? null
+            : () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return SingleChildScrollView(
+                      child: Container(
+                        padding: EdgeInsets.all(20.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20.0),
+                            topRight: Radius.circular(20.0),
                           ),
                         ),
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.send,
+                        margin: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom + 20,
                         ),
-                        onPressed: () async {
-                          if (_commentController.text.trim().isEmpty) {
-                            return;
-                          }
-                          FocusScope.of(context).requestFocus(
-                            FocusNode(),
-                          );
-                          String commentText = _commentController.text;
-                          var comment = CommentModel(
-                            id: DateTime.now().toString(),
-                            creationDate: DateTime.now(),
-                            text: commentText,
-                            username: username,
-                          );
-                          await _commentProvider.createComment(
-                            comment,
-                            _mediaModelProvider.id,
-                          );
-                          setState(() {
-                            _commentsArray.insert(0, comment);
-                          });
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: TextField(
+                                maxLines: 4,
+                                minLines: 2,
+                                keyboardType: TextInputType.multiline,
+                                controller: _commentController,
+                                // textInputAction: TextInputAction.done,
+                                decoration: basicInputStyle.copyWith(
+                                  labelText: 'Add a comment',
+                                  labelStyle: textTheme.bodyText2,
+                                  border: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: theme.accentColor,
+                                    ),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: theme.accentColor,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.send,
+                              ),
+                              onPressed: () async {
+                                if (_commentController.text.trim().isEmpty) {
+                                  return;
+                                }
+                                FocusScope.of(context).requestFocus(
+                                  FocusNode(),
+                                );
+                                String commentText = _commentController.text;
+                                var comment = CommentModel(
+                                  id: DateTime.now().toString(),
+                                  creationDate: DateTime.now(),
+                                  text: commentText,
+                                  username: username,
+                                );
+                                await _commentProvider.createComment(
+                                  comment,
+                                  _mediaModelProvider.id,
+                                );
+                                setState(() {
+                                  _commentsArray.insert(0, comment);
+                                });
 
-                          _commentController.text = '';
+                                _commentController.text = '';
 
-                          Navigator.of(context).pop();
-                        },
-                      )
-                    ],
-                  ),
-                ),
-              );
-            },
-          );
-        },
+                                Navigator.of(context).pop();
+                              },
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
         child: Icon(
           Icons.chat_bubble,
         ),

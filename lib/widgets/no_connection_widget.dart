@@ -23,12 +23,14 @@ class NoConnectionWidget extends StatelessWidget {
           ),
           Text(
             'Ooops seems you are not connected to the internet',
+            style: theme.textTheme.bodyText2,
           ),
           SizedBox(
             height: 20,
           ),
           Text(
             'Visit your downloads',
+            style: theme.textTheme.bodyText2,
           ),
           SizedBox(
             height: 20,
@@ -37,6 +39,11 @@ class NoConnectionWidget extends StatelessWidget {
             height: 50,
             width: 200,
             child: RaisedButton(
+              color: theme.accentColor.withOpacity(
+                0.7,
+              ),
+              splashColor: theme.accentColor,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               onPressed: () {
                 Navigator.of(context).pushNamed(
                   DownloadScreen.routeName,
@@ -44,8 +51,8 @@ class NoConnectionWidget extends StatelessWidget {
               },
               child: Text(
                 'Donwloads',
-                style: theme.textTheme.bodyText2.copyWith(
-                  color: Colors.black54,
+                style: theme.textTheme.bodyText1.copyWith(
+                  fontSize: 20,
                 ),
               ),
             ),
