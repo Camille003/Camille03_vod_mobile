@@ -21,7 +21,7 @@ class MediaProvider with ChangeNotifier {
 
   final int numberOfViews;
   final DateTime uploadDate;
-
+  final String category;
   int numberOfLikes;
 
   MediaModel _media;
@@ -39,6 +39,7 @@ class MediaProvider with ChangeNotifier {
     this.numberOfLikes,
     this.numberOfViews,
     this.uploadDate,
+    this.category
   });
 
   MediaProvider.fromFireBaseDocument(Map<String, dynamic> firebaseDocument)
@@ -49,9 +50,10 @@ class MediaProvider with ChangeNotifier {
         duration = (firebaseDocument['duration']),
         numberOfLikes = firebaseDocument['numberOfLikes'],
         numberOfViews = firebaseDocument['numberOfViews'],
-        uploadDate = DateTime.parse(firebaseDocument['uploadDate']);
+        category = firebaseDocument['category'],
+        uploadDate = DateTime.parse(firebaseDocument['uploadDate'],);
 
- static  Future<MediaProvider> fetchMediaDataForCollection(String id) async {
+  static Future<MediaProvider> fetchMediaDataForCollection(String id) async {
     try {
       final document = await _fireStore.document(id).get();
 

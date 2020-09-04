@@ -20,23 +20,24 @@ class NoConnectionWidget extends StatelessWidget {
         children: [
           SvgWidget(
             "assets/images/no_connection.svg",
+            height: 285,
           ),
           Text(
             'Ooops seems you are not connected to the internet',
             style: theme.textTheme.bodyText2,
           ),
           SizedBox(
-            height: 20,
+            height: 15,
           ),
           Text(
             'Visit your downloads',
             style: theme.textTheme.bodyText2,
           ),
           SizedBox(
-            height: 20,
+            height: 15,
           ),
           SizedBox(
-            height: 50,
+            height: 45,
             width: 200,
             child: RaisedButton(
               color: theme.accentColor.withOpacity(

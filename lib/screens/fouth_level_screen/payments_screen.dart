@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 
 //third party
 import 'package:provider/provider.dart';
-import 'package:vidzone/emums/account_type_enum.dart';
-import 'package:vidzone/helpers/app_bar_helper.dart';
+
+//enum
+import '../../emums/account_type_enum.dart';
+
+//helpers
+import '../../helpers/app_bar_helper.dart';
 
 //providers
 import '../../providers/payment_provider.dart';
@@ -136,7 +140,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                           secondary: Icon(Icons.money_off),
                                           value: _basic,
                                           onChanged: (bool option) {
-                                          
                                             _setState(() {
                                               _basic = option;
                                               _premium = !option;
@@ -205,8 +208,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             );
                           },
                         );
-
-                        //
                       },
                       textStyle: theme.textTheme.bodyText2,
                     ),

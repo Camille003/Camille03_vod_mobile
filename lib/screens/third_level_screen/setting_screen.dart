@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 //helpers
-import 'package:vidzone/helpers/app_bar_helper.dart';
+import '../../helpers/app_bar_helper.dart';
 
 //providers
 import '../../providers/user_provider.dart';
@@ -70,18 +70,19 @@ class _SettingScreenState extends State<SettingScreen> {
         ),
         Expanded(
           child: SettingsTile(
-            description: 'Find out what for and how your data is being used',
+             description:
+                'Find out the purpose of vidzone and how to properly use it',
+          
             descriptionIcon: Icons.priority_high,
-            title: 'Privacy policy',
+            title: 'Terms of usage',
             destination: PolicyScreen.routeName,
           ),
         ),
         Expanded(
           child: SettingsTile(
-            description:
-                'Find out the purpose aof vidzone and how to properly use it',
-            descriptionIcon: Icons.priority_high,
-            title: 'Terms of usage',
+             description: 'Find out what for and how your data is being used',
+            descriptionIcon: Icons.enhanced_encryption,
+            title: 'Privacy',
             destination: PrivacyScreen.routeName,
           ),
         ),

@@ -13,14 +13,18 @@ class LockScreen extends StatefulWidget {
 
 class _LockScreenState extends State<LockScreen> {
   final _controller = TextEditingController();
+  String errorMessage = "";
   void onTap() {
     if (_controller.text.isEmpty) {
       return;
     }
     if (widget.checkPassword(_controller.text)) {
       _controller.text = '';
-
       return;
+    } else {
+      setState(() {
+        errorMessage = "Invalid credentials";
+      });
     }
   }
 
@@ -44,6 +48,7 @@ class _LockScreenState extends State<LockScreen> {
             textAlign: TextAlign.center,
             controller: _controller,
             decoration: InputDecoration(
+              errorText: errorMessage,
               suffixIcon: Icon(
                 Icons.vpn_key,
               ),

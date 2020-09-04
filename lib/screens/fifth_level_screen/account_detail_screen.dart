@@ -14,50 +14,58 @@ class AccountDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Card(
-              elevation: 5,
-              shape: CircleBorder(),
-              child: Container(
-                height: 100,
-                width: 100,
-                child: CircleAvatar(
-                  backgroundImage: NetworkImage(user.imageUrl),
+      child: Column(
+        children: [
+          Card(
+            elevation: 5,
+            shape: CircleBorder(),
+            child: Container(
+              height: 100,
+              width: 100,
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(
+                  user.imageUrl,
                 ),
               ),
             ),
-            Card(
+          ),
+          Expanded(
+            child: Card(
               child: ListTile(
                 title: Text(
-                  user.name,
+                  'Name: ${user.name}',
                 ),
               ),
             ),
-            Card(
+          ),
+          Expanded(
+            child: Card(
               child: ListTile(
                 title: Text(
-                  user.email,
+                  'Name: ${user.email}',
                 ),
               ),
             ),
-            Card(
+          ),
+          Expanded(
+            child: Card(
               child: ListTile(
                 title: Text(
-                  '${user.accountType == AccountType.Premium ? "Premium" : "Basic"}',
+                  'Account: ${user.accountType == AccountType.Premium ? "Premium" : "Basic"}',
                 ),
               ),
             ),
-            Card(
+          ),
+          Expanded(
+            child: Card(
               child: ListTile(
                 title: Text(
-                  'Next payment ${DateFormat.yMMMd().format(user.nextPaymentDate)}',
+                  'Next payment due on: ${DateFormat.yMMMd().format(user.nextPaymentDate)}',
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

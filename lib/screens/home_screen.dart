@@ -64,8 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final userProd = Provider.of<UserProvider>(context);
-    // final mediaQuery = MediaQuery.of(context) ;
+    
     final _tabBar = CupertinoTabBar(
       activeColor: Theme.of(context).accentColor,
       currentIndex: _pageIndex,
@@ -104,10 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
         )
       ],
     );
-    // final tabHeight = _tabBar.preferredSize.height ;
-    // final screenPadding = mediaQuery.viewPadding.top ;
-    // final totalHeight = mediaQuery.size.height ;
-    // final pageViewHeight = totalHeight - (screenPadding + tabHeight) ;
+   
     return Scaffold(
       appBar: AppBar(
         elevation: 1,

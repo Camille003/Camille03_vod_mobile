@@ -14,6 +14,7 @@ import 'package:flick_video_player/flick_video_player.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:video_player/video_player.dart';
 import 'package:vidzone/models/download_model.dart';
+import 'package:vidzone/widgets/offline_widget.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -61,6 +62,9 @@ class _VideoScreenState extends State<VideoScreen> {
 
   //timer
   Timer _additionTimer;
+
+  //Bottom widget
+  PersistentBottomSheetController persistentController;
 
   //controller
   TextEditingController _commentController;
@@ -115,6 +119,10 @@ class _VideoScreenState extends State<VideoScreen> {
       print(
           'Background Isolate Callback: task ($id) is in status ($status) and process ($progress)');
     }
+    if (progress == 100) {
+      print("Hello world");
+    }
+
     final SendPort send =
         IsolateNameServer.lookupPortByName('downloader_send_port');
     send.send([id, status, progress]);
@@ -282,15 +290,21 @@ class _VideoScreenState extends State<VideoScreen> {
 
                 //likes download save
                 ConnectivityWidget(
+                  showOfflineBanner: false,
                   onlineCallback: () {
                     setState(() {
                       _isOnline = true;
                     });
+                    persistentController =
+                        _scaffoldKey.currentState.showBottomSheet(
+                      (context) => OfflineWidget(),
+                    );
                   },
                   offlineCallback: () {
                     setState(() {
                       _isOnline = false;
                     });
+                    persistentController.close();
                   },
                   builder: (context, isOnline) => Container(
                     padding: EdgeInsets.symmetric(horizontal: 10),
@@ -571,7 +585,11 @@ class _VideoScreenState extends State<VideoScreen> {
                   ),
                   child: ExpandablePanel(
                     theme: ExpandableThemeData(
-                        useInkWell: true, iconPadding: EdgeInsets.all(0)),
+                      useInkWell: true,
+                      iconPadding: EdgeInsets.all(
+                        0,
+                      ),
+                    ),
                     header: Container(
                       padding: EdgeInsets.all(0),
                       margin: EdgeInsets.all(0),
